@@ -24,7 +24,12 @@ export default {
   setup() {
     const state = reactive({
       headers: [
-        { text: 'Player', value: 'playerName', class: 'softball-red' },
+        {
+          text: 'Player',
+          value: 'playerName',
+          class: 'softball-red',
+          width: '150px'
+        },
         {
           text: 'PA',
           value: 'accumulated.statLine.pa',
