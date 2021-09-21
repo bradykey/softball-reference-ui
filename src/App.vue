@@ -2,14 +2,16 @@
   <v-app>
     <v-app-bar app color="black" dark>
       <div class="d-flex align-center">
-        <v-img
-          alt="Vuetify Logo"
-          class="shrink mr-2"
-          contain
-          src="@/assets/logo.png"
-          transition="scale-transition"
-          width="300"
-        />
+        <router-link :to="{ name: 'Home' }">
+          <v-img
+            alt="Vuetify Logo"
+            class="shrink mr-2"
+            contain
+            src="@/assets/logo.png"
+            transition="scale-transition"
+            width="300"
+          />
+        </router-link>
       </div>
 
       <v-spacer></v-spacer>
