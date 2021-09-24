@@ -1,4 +1,15 @@
 {
+  /**
+   * Vetur documentation says we need this for the '@' alias to work with
+   * intellisense when importing files using the absolute path:
+   * https://vuejs.github.io/vetur/guide/FAQ.html#vetur-can-t-recognize-components-imported-using-webpack-s-alias
+   */
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"]
+    }
+  },
   "include": ["./src/**/*"],
   "typeAcquisition": {
     "exclude": ["dotenv"]
