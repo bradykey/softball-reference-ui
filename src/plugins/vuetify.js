@@ -4,7 +4,13 @@ import Vuetify from 'vuetify/lib/framework';
 Vue.use(Vuetify);
 
 export default new Vuetify({
-  theme: { dark: true },
+  theme: {
+    themes: {
+      // Customize theme colors
+      //dark: THEME_COLORS
+    },
+    dark: true
+  },
   icons: {
     values: {
       sort: 'mdi-arrow-down'
