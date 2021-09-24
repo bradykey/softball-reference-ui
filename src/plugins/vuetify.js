@@ -10,10 +10,5 @@ export default new Vuetify({
       //dark: THEME_COLORS
     },
     dark: true
-  },
-  icons: {
-    values: {
-      sort: 'mdi-arrow-down'
-    }
   }
 });

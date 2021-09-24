@@ -1,12 +1,24 @@
 <template>
   <v-container>
+    <v-row>
+      <v-col cols="2">
+        <v-select :items="sortableProps" v-model="sortBy" label="Sort by" />
+      </v-col>
+      <v-col>
+        <v-btn color="primary" class="mr-2" @click="toggleOrder">
+          Toggle sort order
+        </v-btn>
+      </v-col>
+    </v-row>
+
     <v-data-table
       v-if="summaryStats"
       :headers="headers"
       :items="summaryStats.players"
       :items-per-page="20"
       class="elevation-1"
-      sort-by="playerName"
+      :sort-by.sync="sortBy"
+      :sort-desc.sync="sortDesc"
       hide-default-footer
       fixed-header
       dense
@@ -17,7 +29,7 @@
 
 <script>
 import ApiService from '@/services/ApiService';
-import { reactive, toRefs } from '@vue/composition-api';
+import { reactive, toRefs, watch } from '@vue/composition-api';
 
 export default {
   name: 'Home',
@@ -34,7 +46,8 @@ export default {
           text: 'PA',
           value: 'accumulated.statLine.pa',
           class: 'softball-red',
-          width: '65px'
+          width: '65px',
+          sortable: false
         },
         {
           text: 'AB',
@@ -151,8 +164,36 @@ export default {
           width: '80px'
         }
       ],
-      summaryStats: null
+      summaryStats: null,
+      sortableProps: [
+        { text: 'PA', value: 'accumulated.statLine.pa' },
+        { text: 'AB', value: 'accumulated.statLine.ab' },
+        { text: 'OBP', value: 'accumulated.statLine.obp' }
+      ],
+      sortBy: 'accumulated.statLine.pa',
+      sortDesc: true
     });
+
+    /*
+     * The state reactive object is reactive as a whole, but each property is
+     * not reactive on its on. We need to adjust the watch signature (by having
+     * it take an annonymous function that returns the state.sortDescending)
+     * since watch methods must watch ref objects. I could also just have this
+     * property be defined as its own const that is a ref...
+     *
+     * const sortDescending = ref(true);
+     */
+    watch(
+      () => state.sortBy,
+      () => {
+        console.log('Sorting By: ' + state.sortBy);
+      },
+      { immediate: true }
+    );
+
+    function toggleOrder() {
+      state.sortDesc = !state.sortDesc;
+    }
 
     // fetch the single season summary
     ApiService.getSeasonSummaryStatLines(9)
@@ -178,7 +219,7 @@ export default {
       })
       .catch(error => console.log(error));
 
-    return { ...toRefs(state) };
+    return { ...toRefs(state), toggleOrder };
   }
 };
 </script>
