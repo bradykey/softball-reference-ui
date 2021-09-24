@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <v-row>
+    <!-- <v-row>
       <v-col cols="2">
         <v-select :items="sortableProps" v-model="sortBy" label="Sort by" />
       </v-col>
@@ -9,7 +9,7 @@
           Toggle sort order
         </v-btn>
       </v-col>
-    </v-row>
+    </v-row> -->
 
     <v-data-table
       v-if="summaryStats"
@@ -47,8 +47,7 @@ export default {
           text: 'PA',
           value: 'accumulated.statLine.pa',
           class: 'softball-red',
-          width: '65px',
-          sortable: false
+          width: '65px'
         },
         {
           text: 'AB',
