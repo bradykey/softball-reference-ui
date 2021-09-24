@@ -19,6 +19,7 @@
       class="elevation-1"
       :sort-by.sync="sortBy"
       :sort-desc.sync="sortDesc"
+      @update:sort-by="forceDesc()"
       hide-default-footer
       fixed-header
       dense
@@ -195,6 +196,22 @@ export default {
       state.sortDesc = !state.sortDesc;
     }
 
+    function forceDesc() {
+      /**
+       * Since this is called on the update of the sort-by property, this method
+       * will get called at the BEGINNING of that event. That is, before it's
+       * actually changed. So therefore, if we set the bound state.sortDesc
+       * property in here to true, it would immediately get overridden by
+       * whatever would have come back from the action of clicking on the
+       * header. Instead, if we use nextTick(), and set the value of the
+       * property in the callback, it'll be done after the DOM update and
+       * actually override the sortDesc, which is what we wanted.
+       */
+      this.$nextTick(() => {
+        state.sortDesc = true;
+      });
+    }
+
     // fetch the single season summary
     ApiService.getSeasonSummaryStatLines(9)
       .then(response => {
@@ -219,7 +236,7 @@ export default {
       })
       .catch(error => console.log(error));
 
-    return { ...toRefs(state), toggleOrder };
+    return { ...toRefs(state), toggleOrder, forceDesc };
   }
 };
 </script>
