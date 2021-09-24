@@ -16,7 +16,7 @@
 </template>
 
 <script>
-import axios from 'axios';
+import ApiService from '@/services/ApiService';
 import { reactive, toRefs } from '@vue/composition-api';
 
 export default {
@@ -155,8 +155,7 @@ export default {
     });
 
     // fetch the single season summary
-    axios
-      .get('https://softball-reference-api.herokuapp.com/teamleagues/9')
+    ApiService.getSeasonSummaryStatLines(9)
       .then(response => {
         // convert the aggregate columns to 3 decimal places
         response.data.players.forEach(player => {
