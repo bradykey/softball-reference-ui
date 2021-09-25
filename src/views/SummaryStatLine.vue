@@ -1,11 +1,19 @@
 <template>
   <v-container>
-    <StatLineTable v-if="summaryStats" :summaryStats="summaryStats" />
+    <TitleCard
+      v-if="seasonSummary"
+      :title="seasonSummary.team"
+      :subtitle="seasonSummary.league"
+      :divider="true"
+    />
+
+    <StatLineTable v-if="seasonSummary" :summaryStats="seasonSummary" />
   </v-container>
 </template>
 
 <script>
 import StatLineTable from '@/components/StatLineTable.vue';
+import TitleCard from '@/components/TitleCard.vue';
 import ApiService from '@/services/ApiService';
 import { reactive, toRefs } from '@vue/composition-api';
 export default {
@@ -17,11 +25,12 @@ export default {
     }
   },
   components: {
+    TitleCard,
     StatLineTable
   },
   setup(props) {
     const state = reactive({
-      summaryStats: null
+      seasonSummary: null
     });
 
     // fetch the single season summary
@@ -44,7 +53,7 @@ export default {
           player.accumulated.statLine['ops'] =
             player.accumulated.statLine['ops'].toFixed(3);
         });
-        state.summaryStats = response.data;
+        state.seasonSummary = response.data;
       })
       .catch(error => console.log(error));
 
