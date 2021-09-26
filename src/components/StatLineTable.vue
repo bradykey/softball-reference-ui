@@ -3,12 +3,12 @@
     v-if="summaryStats"
     :headers="headers"
     :items="summaryStats.players"
-    :items-per-page="20"
     class="elevation-1"
     :sort-by.sync="sortBy"
     :sort-desc.sync="sortDesc"
     @update:sort-by="customInitialSortDirection"
     must-sort
+    disable-pagination
     :multi-sort="false"
     hide-default-footer
     fixed-header

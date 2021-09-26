@@ -9,7 +9,7 @@
             contain
             src="@/assets/sr-logo.png"
             transition="scale-transition"
-            width="300"
+            :width="$vuetify.breakpoint.smAndUp ? 250 : 150"
           />
         </router-link>
       </div>
