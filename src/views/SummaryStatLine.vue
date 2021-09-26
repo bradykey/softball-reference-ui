@@ -4,6 +4,8 @@
       v-if="seasonSummary"
       :title="seasonSummary.team"
       :subtitle="seasonSummary.league"
+      :titleChipText="record"
+      :titleChipColor="CustomColors.softball_red"
       :divider="true"
     />
 
@@ -15,7 +17,8 @@
 import StatLineTable from '@/components/StatLineTable.vue';
 import TitleCard from '@/components/TitleCard.vue';
 import ApiService from '@/services/ApiService';
-import { reactive, toRefs } from '@vue/composition-api';
+import CustomColors from '@/plugins/vuetify/theme.js';
+import { computed, reactive, toRefs } from '@vue/composition-api';
 export default {
   name: 'SummaryStatLine',
   props: {
@@ -31,6 +34,10 @@ export default {
   setup(props) {
     const state = reactive({
       seasonSummary: null
+    });
+
+    const record = computed(() => {
+      return state.seasonSummary.wins + '-' + state.seasonSummary.losses;
     });
 
     // fetch the single season summary
@@ -58,7 +65,9 @@ export default {
       .catch(error => console.log(error));
 
     return {
-      ...toRefs(state)
+      ...toRefs(state),
+      record,
+      CustomColors
     };
   }
 };

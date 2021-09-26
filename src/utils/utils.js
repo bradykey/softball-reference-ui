@@ -8,10 +8,3 @@ export function isObjectUndefinedEmptyOrNull(someObject) {
   if (someObject) return !Object.keys(someObject).length;
   else return true;
 }
-
-/**
- * Constant value that defines the colors used in the theme.
- */
-export const THEME_COLORS = {
-  primary: ' '
-};
