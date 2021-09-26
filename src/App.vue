@@ -7,7 +7,7 @@
             alt="Vuetify Logo"
             class="shrink mr-2"
             contain
-            src="@/assets/sr-logo.png"
+            src="@/assets/sr-logo-com.png"
             transition="scale-transition"
             :width="$vuetify.breakpoint.smAndUp ? 250 : 150"
           />
