@@ -1,5 +1,5 @@
 /**
- * Cusom theme colors that will be inserted in the vuetify.js dark theme.
+ * Custom theme colors that will be inserted in the vuetify.js dark theme.
  */
 export default {
   // All keys will generate theme styles,

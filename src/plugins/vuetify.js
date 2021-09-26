@@ -7,7 +7,7 @@ Vue.use(Vuetify);
 export default new Vuetify({
   theme: {
     themes: {
-      CustomTheme
+      dark: CustomTheme
     },
     dark: true
   }

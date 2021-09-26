@@ -14,7 +14,93 @@
     fixed-header
     dense
     mobile-breakpoint="0"
-  ></v-data-table>
+  >
+    <!-- Create a "sum" row that doesn't get sorted into the main logic of the
+    table. We can get access to the headers of the main table through the
+    deconstructed slot prop object, but we'll need to build the row and columns
+    (tr and tds) manually. -->
+    <template v-slot:body.append="{ headers }">
+      <tr class="softball_grey font-weight-bold">
+        <td v-for="(header, i) in headers" :key="i">
+          <div v-if="header.text == 'Player'">&Sigma;:</div>
+
+          <div v-else-if="header.text == 'PA'">
+            {{ summaryStats.accumulated.statLine.pa }}
+          </div>
+
+          <div v-else-if="header.text == 'AB'">
+            {{ summaryStats.accumulated.statLine.ab }}
+          </div>
+
+          <div v-else-if="header.text == 'R'">
+            {{ summaryStats.accumulated.statLine.r }}
+          </div>
+
+          <div v-else-if="header.text == 'H'">
+            {{ summaryStats.accumulated.statLine.h }}
+          </div>
+
+          <div v-else-if="header.text == '1B'">
+            {{ summaryStats.accumulated.statLine.b1 }}
+          </div>
+
+          <div v-else-if="header.text == '2B'">
+            {{ summaryStats.accumulated.statLine.b2 }}
+          </div>
+
+          <div v-else-if="header.text == '3B'">
+            {{ summaryStats.accumulated.statLine.b3 }}
+          </div>
+
+          <div v-else-if="header.text == 'HR'">
+            {{ summaryStats.accumulated.statLine.hr }}
+          </div>
+
+          <div v-else-if="header.text == 'RBI'">
+            {{ summaryStats.accumulated.statLine.rbi }}
+          </div>
+
+          <div v-else-if="header.text == 'BB'">
+            {{ summaryStats.accumulated.statLine.bb }}
+          </div>
+
+          <div v-else-if="header.text == 'SO'">
+            {{ summaryStats.accumulated.statLine.so }}
+          </div>
+
+          <div v-else-if="header.text == 'SAC'">
+            {{ summaryStats.accumulated.statLine.sac }}
+          </div>
+
+          <div v-else-if="header.text == 'FoulOut'">
+            {{ summaryStats.accumulated.statLine.fo }}
+          </div>
+
+          <div v-else-if="header.text == 'GIDP'">
+            {{ summaryStats.accumulated.statLine.gidp }}
+          </div>
+
+          <div v-else-if="header.text == 'BA'">
+            {{ summaryStats.accumulated.statLine.avg }}
+          </div>
+
+          <div v-else-if="header.text == 'OBP'">
+            {{ summaryStats.accumulated.statLine.obp }}
+          </div>
+
+          <div v-else-if="header.text == 'SLG'">
+            {{ summaryStats.accumulated.statLine.slg }}
+          </div>
+
+          <div v-else-if="header.text == 'OPS'">
+            {{ summaryStats.accumulated.statLine.ops }}
+          </div>
+
+          <div v-else>--</div>
+        </td>
+      </tr>
+    </template>
+  </v-data-table>
 </template>
 
 <script>
@@ -35,154 +121,154 @@ export default {
         {
           text: 'Player',
           value: 'playerName',
-          class: 'softball-red',
+          class: 'softball_red',
           width: '150px',
           sortDescFirst: false
         },
         {
           text: 'PA',
           value: 'accumulated.statLine.pa',
-          class: 'softball-red',
+          class: 'softball_red',
           width: '65px',
           sortDescFirst: true
         },
         {
           text: 'AB',
           value: 'accumulated.statLine.ab',
-          class: 'softball-red',
+          class: 'softball_red',
           width: '67px',
           sortDescFirst: true
         },
         {
           text: 'R',
           value: 'accumulated.statLine.r',
-          class: 'softball-red',
+          class: 'softball_red',
           width: '65px',
           sortDescFirst: true
         },
         {
           text: 'H',
           value: 'accumulated.statLine.h',
-          class: 'softball-red',
+          class: 'softball_red',
           width: '65px',
           sortDescFirst: true
         },
         {
           text: '1B',
           value: 'accumulated.statLine.b1',
-          class: 'softball-red',
+          class: 'softball_red',
           width: '65px',
           sortDescFirst: true
         },
         {
           text: '2B',
           value: 'accumulated.statLine.b2',
-          class: 'softball-red',
+          class: 'softball_red',
           width: '65px',
           sortDescFirst: true
         },
         {
           text: '3B',
           value: 'accumulated.statLine.b3',
-          class: 'softball-red',
+          class: 'softball_red',
           width: '65px',
           sortDescFirst: true
         },
         {
           text: 'HR',
           value: 'accumulated.statLine.hr',
-          class: 'softball-red',
+          class: 'softball_red',
           width: '67px',
           sortDescFirst: true
         },
         {
           text: 'RBI',
           value: 'accumulated.statLine.rbi',
-          class: 'softball-red',
+          class: 'softball_red',
           width: '70px',
           sortDescFirst: true
         },
         {
           text: 'BB',
           value: 'accumulated.statLine.bb',
-          class: 'softball-red',
+          class: 'softball_red',
           width: '67px',
           sortDescFirst: true
         },
         {
           text: 'SO',
           value: 'accumulated.statLine.so',
-          class: 'softball-red',
+          class: 'softball_red',
           width: '67px',
           sortDescFirst: false
         },
         {
           text: 'SAC',
           value: 'accumulated.statLine.sac',
-          class: 'softball-red',
+          class: 'softball_red',
           width: '75px',
           sortDescFirst: true
         },
         {
           text: 'FoulOut',
           value: 'accumulated.statLine.fo',
-          class: 'softball-red',
+          class: 'softball_red',
           width: '95px',
           sortDescFirst: false
         },
         {
           text: 'GIDP',
           value: 'accumulated.statLine.gidp',
-          class: 'softball-red',
+          class: 'softball_red',
           width: '95px',
           sortDescFirst: false
         },
         {
           text: 'BA',
           value: 'accumulated.statLine.avg',
-          class: 'softball-red',
+          class: 'softball_red',
           width: '67px',
           sortDescFirst: true
         },
         {
           text: 'OBP',
           value: 'accumulated.statLine.obp',
-          class: 'softball-red',
+          class: 'softball_red',
           width: '75px',
           sortDescFirst: true
         },
         {
           text: 'SLG',
           value: 'accumulated.statLine.slg',
-          class: 'softball-red',
+          class: 'softball_red',
           width: '75px',
           sortDescFirst: true
         },
         {
           text: 'OPS',
           value: 'accumulated.statLine.ops',
-          class: 'softball-red',
+          class: 'softball_red',
           width: '75px',
           sortDescFirst: true
         },
         {
           text: 'OBP+',
           value: 'accumulated.obpplus',
-          class: 'softball-red',
+          class: 'softball_red',
           width: '85px',
           sortDescFirst: true
         },
         {
           text: 'SLG+',
           value: 'accumulated.slgplus',
-          class: 'softball-red',
+          class: 'softball_red',
           width: '80px',
           sortDescFirst: true
         },
         {
           text: 'OPS+',
           value: 'accumulated.opsplus',
-          class: 'softball-red',
+          class: 'softball_red',
           width: '80px',
           sortDescFirst: true
         }
@@ -254,9 +340,3 @@ export default {
   }
 };
 </script>
-<style>
-.softball-red {
-  background-color: #cf2036 !important;
-  border-color: #cf2036 !important;
-}
-</style>

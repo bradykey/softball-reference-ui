@@ -44,6 +44,18 @@ export default {
     ApiService.getSeasonSummaryStatLines(props.id)
       .then(response => {
         // convert the aggregate columns to 3 decimal places
+        response.data.accumulated.statLine['avg'] =
+          response.data.accumulated.statLine['avg'].toFixed(3);
+
+        response.data.accumulated.statLine['obp'] =
+          response.data.accumulated.statLine['obp'].toFixed(3);
+
+        response.data.accumulated.statLine['slg'] =
+          response.data.accumulated.statLine['slg'].toFixed(3);
+
+        response.data.accumulated.statLine['ops'] =
+          response.data.accumulated.statLine['ops'].toFixed(3);
+
         response.data.players.forEach(player => {
           player.accumulated.statLine['avg'] =
             player.accumulated.statLine['avg'].toFixed(3);
