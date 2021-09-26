@@ -13,7 +13,7 @@
     hide-default-footer
     fixed-header
     dense
-    mobile-breakpoint="0"
+    :mobile-breakpoint="false"
   >
     <!-- Create a "sum" row that doesn't get sorted into the main logic of the
     table. We can get access to the headers of the main table through the
