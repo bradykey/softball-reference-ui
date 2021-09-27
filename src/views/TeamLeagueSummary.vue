@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container v-if="!Utils.isObjectUndefinedEmptyOrNull(teamLeagues)">
     <v-row>
       <v-col>
         <TitleCard
