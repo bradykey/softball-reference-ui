@@ -3,9 +3,8 @@
     <v-row>
       <v-col>
         <TitleCard
-          v-if="!Utils.isObjectUndefinedEmptyOrNull(seasonSummary)"
-          :title="seasonSummary.team"
-          :subtitle="seasonSummary.league"
+          :title="team"
+          :subtitle="league"
           :titleChipText="record"
           :titleChipColor="CustomColors.softball_red"
           :divider="true"
@@ -19,9 +18,10 @@
           :items="teamLeagues"
           item-text="league"
           item-value="teamLeagueId"
-          v-model="currTeamLeagueId"
+          v-model="currTeamLeague"
           label="Season"
           outlined
+          return-object
         />
       </v-col>
     </v-row>
@@ -60,12 +60,22 @@ export default {
        * name. Now we don't have to have a route with ids we don't know...
        */
       teamLeagues: null,
-      // TODO: defaulting to the latest year. I need to do this dynamically, not hard coded.
-      currTeamLeagueId: 9,
+      currTeamLeague: null,
       seasonSummary: null
     });
 
+    const team = computed(() => {
+      if (Utils.isObjectUndefinedEmptyOrNull(state.teamLeagues)) return '';
+      else return state.teamLeagues[0].team;
+    });
+
+    const league = computed(() => {
+      if (Utils.isObjectUndefinedEmptyOrNull(state.currTeamLeague)) return '';
+      else return state.currTeamLeague.league;
+    });
+
     const record = computed(() => {
+      if (Utils.isObjectUndefinedEmptyOrNull(state.seasonSummary)) return '0-0';
       return state.seasonSummary.wins + '-' + state.seasonSummary.losses;
     });
 
@@ -77,7 +87,11 @@ export default {
       Utils.formatHypenSpacedWordsToSpaces(props.teamName)
     )
       .then(response => {
-        state.teamLeagues = response.data;
+        state.teamLeagues = response.data.sort(
+          (a, b) => a.teamLeagueId - b.teamLeagueId
+        );
+        // default the selection to the latest year
+        state.currTeamLeague = state.teamLeagues[state.teamLeagues.length - 1];
       })
       .catch(error => console.log(error));
 
@@ -91,53 +105,58 @@ export default {
      * const currTeamLeagueId = ref(true);
      */
     watch(
-      () => state.currTeamLeagueId,
-      () => {
-        // fetch the single season summary
-        ApiService.getSeasonSummaryStatLines(state.currTeamLeagueId)
-          .then(response => {
-            // convert the aggregate columns to 3 decimal places
-            response.data.accumulated.statLine['avg'] =
-              response.data.accumulated.statLine['avg'].toFixed(3);
+      () => state.currTeamLeague,
+      newCurrTeamLeague => {
+        if (!Utils.isObjectUndefinedEmptyOrNull(newCurrTeamLeague))
+          // fetch the single season summary
+          ApiService.getSeasonSummaryStatLines(
+            state.currTeamLeague.teamLeagueId
+          )
+            .then(response => {
+              // convert the aggregate columns to 3 decimal places
+              response.data.accumulated.statLine['avg'] =
+                response.data.accumulated.statLine['avg'].toFixed(3);
 
-            response.data.accumulated.statLine['obp'] =
-              response.data.accumulated.statLine['obp'].toFixed(3);
+              response.data.accumulated.statLine['obp'] =
+                response.data.accumulated.statLine['obp'].toFixed(3);
 
-            response.data.accumulated.statLine['slg'] =
-              response.data.accumulated.statLine['slg'].toFixed(3);
+              response.data.accumulated.statLine['slg'] =
+                response.data.accumulated.statLine['slg'].toFixed(3);
 
-            response.data.accumulated.statLine['ops'] =
-              response.data.accumulated.statLine['ops'].toFixed(3);
+              response.data.accumulated.statLine['ops'] =
+                response.data.accumulated.statLine['ops'].toFixed(3);
 
-            response.data.players.forEach(player => {
-              player.accumulated.statLine['avg'] =
-                player.accumulated.statLine['avg'].toFixed(3);
+              response.data.players.forEach(player => {
+                player.accumulated.statLine['avg'] =
+                  player.accumulated.statLine['avg'].toFixed(3);
+              });
+              response.data.players.forEach(player => {
+                player.accumulated.statLine['obp'] =
+                  player.accumulated.statLine['obp'].toFixed(3);
+              });
+              response.data.players.forEach(player => {
+                player.accumulated.statLine['slg'] =
+                  player.accumulated.statLine['slg'].toFixed(3);
+              });
+              response.data.players.forEach(player => {
+                player.accumulated.statLine['ops'] =
+                  player.accumulated.statLine['ops'].toFixed(3);
+              });
+              state.seasonSummary = response.data;
+            })
+            .catch(error => {
+              // clear the season summary and log the error
+              state.seasonSummary = null;
+              console.log(error);
             });
-            response.data.players.forEach(player => {
-              player.accumulated.statLine['obp'] =
-                player.accumulated.statLine['obp'].toFixed(3);
-            });
-            response.data.players.forEach(player => {
-              player.accumulated.statLine['slg'] =
-                player.accumulated.statLine['slg'].toFixed(3);
-            });
-            response.data.players.forEach(player => {
-              player.accumulated.statLine['ops'] =
-                player.accumulated.statLine['ops'].toFixed(3);
-            });
-            state.seasonSummary = response.data;
-          })
-          .catch(error => {
-            // clear the season summary and log the error
-            state.seasonSummary = null;
-            console.log(error);
-          });
       },
       { immediate: true }
     );
 
     return {
       ...toRefs(state),
+      team,
+      league,
       record,
       CustomColors,
       Utils
