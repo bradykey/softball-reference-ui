@@ -1,5 +1,5 @@
 <template>
-  <v-card :flat="flat" color="transparent">
+  <v-card :flat="flat" elevation="0" color="transparent">
     <v-card-title class="text-h5 text-sm-h3 font-weight-bold">
       {{ title }}
       <v-divider class="mx-4" vertical></v-divider>
