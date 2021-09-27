@@ -18,7 +18,14 @@
     </v-app-bar>
 
     <v-main>
-      <router-view />
+      <!-- **NOTE:** Vue won't reload your page when you re-navigate to a page
+      you already have loaded, even if the dynamic segments or query parameters
+      have changed. Therefore, we can use this shortcut to force Vue to treat
+      the ENTIRE path (including dynamic segments -- params -- and query params)
+      as the key. You could also watch the $route object in each view:
+      https://router.vuejs.org/guide/essentials/dynamic-matching.html#reacting-to-params-changes
+      -->
+      <router-view :key="$route.fullPath" />
     </v-main>
   </v-app>
 </template>

@@ -21,6 +21,9 @@ export default {
    * ALL AXIOS EVENTS RETURN A PROMISE SO WE MUST RETURN IT AS WELL.
    */
 
+  getTeamLeaguesByName(name) {
+    return apiClient.get('/teamleagues?team=' + name);
+  },
   /**
    * Retrieve the Season Summary for a TeamLeague. This is wrapped up in the
    * SummaryStatLineResponse from the API and contains all the information about

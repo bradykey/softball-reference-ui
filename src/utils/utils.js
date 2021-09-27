@@ -8,3 +8,12 @@ export function isObjectUndefinedEmptyOrNull(someObject) {
   if (someObject) return !Object.keys(someObject).length;
   else return true;
 }
+
+/**
+ * Replaces text that has hyphens in it with spaces.
+ * @param {String} text
+ * @returns a new string with spaces where the hyphens used to be.
+ */
+export function formatHypenSpacedWordsToSpaces(text) {
+  return text.replace(/-/g, ' ');
+}

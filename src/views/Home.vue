@@ -10,8 +10,8 @@ export default {
   setup() {
     // immediately re-direct... FOR NOW
     router.push({
-      name: 'SummaryStatLine',
-      params: { id: '9' }
+      name: 'TeamLeagueSummary',
+      params: { teamName: 'garden-hosers' }
     });
   }
 };

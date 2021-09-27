@@ -21,9 +21,9 @@
     >
       {{ subtitle }}
     </v-card-subtitle>
-    <v-card-text class="text-body-1">
+    <!-- <v-card-text class="text-body-1">
       {{ text }}
-    </v-card-text>
+    </v-card-text> -->
   </v-card>
 </template>
 

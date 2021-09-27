@@ -13,7 +13,7 @@
     hide-default-footer
     fixed-header
     dense
-    :mobile-breakpoint="false"
+    mobile-breakpoint="0"
   >
     <!-- Create a "sum" row that doesn't get sorted into the main logic of the
     table. We can get access to the headers of the main table through the
@@ -104,7 +104,7 @@
 </template>
 
 <script>
-import { reactive, toRefs, watch } from '@vue/composition-api';
+import { reactive, toRefs } from '@vue/composition-api';
 import * as Utils from '@/utils/utils';
 
 export default {
@@ -120,7 +120,7 @@ export default {
       headers: [
         {
           text: 'Player',
-          value: 'playerName',
+          value: 'accumulated.statLine.playerName',
           class: 'softball_red',
           width: '150px',
           sortDescFirst: false
@@ -273,26 +273,9 @@ export default {
           sortDescFirst: true
         }
       ],
-      sortBy: 'playerName',
+      sortBy: 'accumulated.statLine.playerName',
       sortDesc: false
     });
-
-    /*
-     * The state reactive object is reactive as a whole, but each property is
-     * not reactive on its on. We need to adjust the watch signature (by having
-     * it take an annonymous function that returns the state.sortDescending)
-     * since watch methods must watch ref objects. I could also just have this
-     * property be defined as its own const that is a ref...
-     *
-     * const sortDescending = ref(true);
-     */
-    watch(
-      () => state.sortBy,
-      () => {
-        //console.log('Sorting By: ' + state.sortBy);
-      },
-      { immediate: true }
-    );
 
     /**
      * By default, columns that are sorted using the built in "click-on-header"
