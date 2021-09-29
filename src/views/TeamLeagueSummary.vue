@@ -90,9 +90,10 @@ export default {
             : '') +
           (state.seasonSummary.runs - state.seasonSummary.runsAllowed) +
           ' | ' +
-          'Win Streak: ' +
-          state.seasonSummary.winStreak +
-          (state.seasonSummary.winStreak == 1 ? ' game' : ' games')
+          'Streak: ' +
+          (state.seasonSummary.winStreak > state.seasonSummary.lossStreak
+            ? 'W' + state.seasonSummary.winStreak
+            : 'L' + state.seasonSummary.lossStreak)
         );
     });
 
