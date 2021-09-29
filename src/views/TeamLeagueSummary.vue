@@ -84,6 +84,12 @@ export default {
           '-' +
           state.seasonSummary.awayLosses +
           ' | ' +
+          'Run Diff: ' +
+          (state.seasonSummary.runs > state.seasonSummary.runsAllowed
+            ? '+'
+            : '') +
+          (state.seasonSummary.runs - state.seasonSummary.runsAllowed) +
+          ' | ' +
           'Win Streak: ' +
           state.seasonSummary.winStreak +
           (state.seasonSummary.winStreak == 1 ? ' game' : ' games')
