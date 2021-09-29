@@ -21,7 +21,7 @@
     <template v-slot:body.append="{ headers }">
       <tr class="softball_grey font-weight-bold">
         <td v-for="(header, i) in headers" :key="i">
-          <div v-if="header.text == 'Player'"></div>
+          <div v-if="header.text == 'Player'">Team Totals</div>
 
           <div v-else-if="header.text == 'PA'">
             {{ accumulatedStats.statLine.pa }}
