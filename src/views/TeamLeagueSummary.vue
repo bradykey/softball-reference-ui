@@ -4,7 +4,7 @@
       <v-col>
         <TitleCard
           :title="team"
-          :subtitle="league"
+          :subtitle="recordSummarySubtitle"
           :titleChipText="record"
           :titleChipColor="CustomColors.softball_red"
           :divider="true"
@@ -69,14 +69,29 @@ export default {
       else return state.teamLeagues[0].team;
     });
 
-    const league = computed(() => {
-      if (Utils.isObjectUndefinedEmptyOrNull(state.currTeamLeague)) return '';
-      else return state.currTeamLeague.league;
+    const recordSummarySubtitle = computed(() => {
+      if (Utils.isObjectUndefinedEmptyOrNull(state.seasonSummary)) return '';
+      else
+        return (
+          'Home: ' +
+          state.seasonSummary.homeWins +
+          '-' +
+          state.seasonSummary.homeLosses +
+          ' | ' +
+          'Away: ' +
+          state.seasonSummary.awayWins +
+          '-' +
+          state.seasonSummary.awayLosses +
+          ' | ' +
+          'Win Streak: ' +
+          state.seasonSummary.winStreak +
+          (state.seasonSummary.winStreak == 1 ? ' game' : ' games')
+        );
     });
 
     const record = computed(() => {
       if (Utils.isObjectUndefinedEmptyOrNull(state.seasonSummary)) return '0-0';
-      return state.seasonSummary.wins + '-' + state.seasonSummary.losses;
+      else return state.seasonSummary.wins + '-' + state.seasonSummary.losses;
     });
 
     /*
@@ -156,7 +171,7 @@ export default {
     return {
       ...toRefs(state),
       team,
-      league,
+      recordSummarySubtitle,
       record,
       CustomColors,
       Utils
