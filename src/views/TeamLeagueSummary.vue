@@ -28,7 +28,8 @@
 
     <StatLineTable
       v-if="!Utils.isObjectUndefinedEmptyOrNull(seasonSummary)"
-      :summaryStats="seasonSummary"
+      :statLines="seasonSummary.players"
+      :accumulatedStats="seasonSummary.accumulated"
     />
   </v-container>
 </template>

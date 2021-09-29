@@ -1,8 +1,7 @@
 <template>
   <v-data-table
-    v-if="summaryStats"
     :headers="headers"
-    :items="summaryStats.players"
+    :items="statLines"
     class="elevation-1"
     :sort-by.sync="sortBy"
     :sort-desc.sync="sortDesc"
@@ -25,75 +24,75 @@
           <div v-if="header.text == 'Player'"></div>
 
           <div v-else-if="header.text == 'PA'">
-            {{ summaryStats.accumulated.statLine.pa }}
+            {{ accumulatedStats.statLine.pa }}
           </div>
 
           <div v-else-if="header.text == 'AB'">
-            {{ summaryStats.accumulated.statLine.ab }}
+            {{ accumulatedStats.statLine.ab }}
           </div>
 
           <div v-else-if="header.text == 'R'">
-            {{ summaryStats.accumulated.statLine.r }}
+            {{ accumulatedStats.statLine.r }}
           </div>
 
           <div v-else-if="header.text == 'H'">
-            {{ summaryStats.accumulated.statLine.h }}
+            {{ accumulatedStats.statLine.h }}
           </div>
 
           <div v-else-if="header.text == '1B'">
-            {{ summaryStats.accumulated.statLine.b1 }}
+            {{ accumulatedStats.statLine.b1 }}
           </div>
 
           <div v-else-if="header.text == '2B'">
-            {{ summaryStats.accumulated.statLine.b2 }}
+            {{ accumulatedStats.statLine.b2 }}
           </div>
 
           <div v-else-if="header.text == '3B'">
-            {{ summaryStats.accumulated.statLine.b3 }}
+            {{ accumulatedStats.statLine.b3 }}
           </div>
 
           <div v-else-if="header.text == 'HR'">
-            {{ summaryStats.accumulated.statLine.hr }}
+            {{ accumulatedStats.statLine.hr }}
           </div>
 
           <div v-else-if="header.text == 'RBI'">
-            {{ summaryStats.accumulated.statLine.rbi }}
+            {{ accumulatedStats.statLine.rbi }}
           </div>
 
           <div v-else-if="header.text == 'BB'">
-            {{ summaryStats.accumulated.statLine.bb }}
+            {{ accumulatedStats.statLine.bb }}
           </div>
 
           <div v-else-if="header.text == 'SO'">
-            {{ summaryStats.accumulated.statLine.so }}
+            {{ accumulatedStats.statLine.so }}
           </div>
 
           <div v-else-if="header.text == 'SAC'">
-            {{ summaryStats.accumulated.statLine.sac }}
+            {{ accumulatedStats.statLine.sac }}
           </div>
 
           <div v-else-if="header.text == 'FoulOut'">
-            {{ summaryStats.accumulated.statLine.fo }}
+            {{ accumulatedStats.statLine.fo }}
           </div>
 
           <div v-else-if="header.text == 'GIDP'">
-            {{ summaryStats.accumulated.statLine.gidp }}
+            {{ accumulatedStats.statLine.gidp }}
           </div>
 
           <div v-else-if="header.text == 'BA'">
-            {{ summaryStats.accumulated.statLine.avg }}
+            {{ accumulatedStats.statLine.avg }}
           </div>
 
           <div v-else-if="header.text == 'OBP'">
-            {{ summaryStats.accumulated.statLine.obp }}
+            {{ accumulatedStats.statLine.obp }}
           </div>
 
           <div v-else-if="header.text == 'SLG'">
-            {{ summaryStats.accumulated.statLine.slg }}
+            {{ accumulatedStats.statLine.slg }}
           </div>
 
           <div v-else-if="header.text == 'OPS'">
-            {{ summaryStats.accumulated.statLine.ops }}
+            {{ accumulatedStats.statLine.ops }}
           </div>
 
           <div v-else>--</div>
@@ -110,7 +109,19 @@ import * as Utils from '@/utils/utils';
 export default {
   name: 'Home',
   props: {
-    summaryStats: {
+    /**
+     * The collection of statlines that will make up the table.
+     */
+    statLines: {
+      type: Array,
+      required: true
+    },
+    /**
+     * The stats to fill the "sum" row at the bottom of the table. That is, if
+     * all the rows were summed in the column, this row should contain that
+     * value.
+     */
+    accumulatedStats: {
       type: Object,
       required: true
     }
