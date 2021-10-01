@@ -21,6 +21,20 @@ export default {
    * ALL AXIOS EVENTS RETURN A PROMISE SO WE MUST RETURN IT AS WELL.
    */
 
+  /**
+   * Retrieve all of the Teams in the database.
+   *
+   * @returns the collection of Teams in the database
+   */
+  getTeams() {
+    return apiClient.get('/teams');
+  },
+  /**
+   * Retrieve the collection of TeamLeagues associated with the Team name passed in as a query param.
+   *
+   * @param {string} name the query param used to distinguish the team name of the TeamLeagues to fetch.
+   * @returns The array of TeamLeagues with the Team matching the name that was passed in.
+   */
   getTeamLeaguesByName(name) {
     return apiClient.get('/teamleagues?team=' + name);
   },

@@ -11,7 +11,7 @@ export default {
     // immediately re-direct... FOR NOW
     router.push({
       name: 'TeamLeagueSummary',
-      params: { teamName: 'garden-hosers' }
+      params: { teamName: 'Garden Hosers' }
     });
   }
 };

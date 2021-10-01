@@ -4,7 +4,7 @@
       <div class="d-flex align-center">
         <router-link :to="{ name: 'Home' }">
           <v-img
-            alt="Vuetify Logo"
+            alt="Softball-Reference.com Logo"
             class="shrink mr-2"
             contain
             src="@/assets/sr-logo-com.png"
@@ -14,7 +14,32 @@
         </router-link>
       </div>
 
-      <v-spacer></v-spacer>
+      <v-divider class="mx-4" vertical></v-divider>
+      <v-row class="ml-2">
+        <v-menu offset-y>
+          <template v-slot:activator="{ on, attrs }">
+            <v-chip color="softball_red" v-bind="attrs" v-on="on">
+              <v-avatar>
+                <v-icon>mdi-baseball</v-icon>
+              </v-avatar>
+              Select Team
+            </v-chip>
+          </template>
+          <v-list dense shaped>
+            <v-list-item-group v-model="selectedTeam" color="softball_red">
+              <v-list-item
+                v-for="(team, index) in teams"
+                :key="index"
+                @click="goToSelectedTeam(team.name)"
+              >
+                <v-list-item-content>
+                  <v-list-item-title v-text="team.name"></v-list-item-title>
+                </v-list-item-content>
+              </v-list-item>
+            </v-list-item-group>
+          </v-list>
+        </v-menu>
+      </v-row>
     </v-app-bar>
 
     <v-main>
@@ -31,11 +56,36 @@
 </template>
 
 <script>
+import { reactive, toRefs } from '@vue/composition-api';
+import ApiService from './services/ApiService';
+import router from './router/router';
 export default {
   name: 'App',
+  setup() {
+    const state = reactive({
+      teams: null,
+      selectedTeam: null
+    });
 
-  data: () => ({
-    //
-  })
+    /*
+     * Fetch the teams and fill the select dropdown.
+     */
+    ApiService.getTeams()
+      .then(response => {
+        state.teams = response.data;
+        // sort alphabetically
+        state.teams.sort();
+      })
+      .catch(error => console.log(error));
+
+    function goToSelectedTeam(teamName) {
+      router.push({
+        name: 'TeamLeagueSummary',
+        params: { teamName: teamName }
+      });
+    }
+
+    return { ...toRefs(state), goToSelectedTeam };
+  }
 };
 </script>

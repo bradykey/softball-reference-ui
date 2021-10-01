@@ -110,11 +110,11 @@ export default {
       Utils.formatHypenSpacedWordsToSpaces(props.teamName)
     )
       .then(response => {
-        state.teamLeagues = response.data.sort(
-          (a, b) => a.teamLeagueId - b.teamLeagueId
-        );
+        state.teamLeagues = response.data;
+        // sort in descending order, newst to oldest year
+        state.teamLeagues.sort((a, b) => b.teamLeagueId - a.teamLeagueId);
         // default the selection to the latest year
-        state.currTeamLeague = state.teamLeagues[state.teamLeagues.length - 1];
+        state.currTeamLeague = state.teamLeagues[0];
       })
       .catch(error => console.log(error));
 
