@@ -52,9 +52,15 @@ export default {
       headers: [
         {
           text: 'Date',
-          value: 'date',
+          value: 'splitDate',
           class: 'softball_red',
-          width: '30%'
+          width: '15%'
+        },
+        {
+          text: 'Time',
+          value: 'splitTime',
+          class: 'softball_red',
+          width: '15%'
         },
         /*
          * This is a readable column that doesn't map to the object directly
@@ -97,7 +103,7 @@ export default {
           width: '20%'
         }
       ],
-      sortBy: 'date',
+      sortBy: 'splitDate',
       sortDesc: true
     });
 
@@ -141,6 +147,9 @@ export default {
        * object by just "subbing" into the array with a new property name.
        */
       props.games.forEach(game => {
+        let splitDate = game.date.split(' ');
+        game['splitDate'] = splitDate[0];
+        game['splitTime'] = splitDate[1];
         game['winLoss'] = game.score > game.opponentScore ? 'W' : 'L';
 
         game['wasHome'] = game.wasHome ? '' : '@';

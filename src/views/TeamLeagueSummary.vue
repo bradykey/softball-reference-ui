@@ -37,6 +37,7 @@
     </v-row>
 
     <SectionHeader
+      v-if="!Utils.isObjectUndefinedEmptyOrNull(games)"
       title="Games"
       :color="CustomColors.softball_yellow"
       :outlined="true"
