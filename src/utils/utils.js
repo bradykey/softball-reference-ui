@@ -41,3 +41,29 @@ export function flattenObject(obj) {
 
   return flattened;
 }
+
+/**
+ * By default, columns that are sorted using the built in "click-on-header"
+ * functionality of the v-data-table sort ascending first, and then
+ * descending. Since we want the numbered stats to sort descending first (so
+ * we see who has the highest PAs, BA, etc.) we have to handle the override
+ * of the sortDesc property.
+ *
+ * NOTE: We need to have must-sort turned on for the table otherwise,
+ * sometimes the payload of this event is an array of size one, and
+ * sometimes it's a string. Weird. must-sort keeps the "reset" functionality
+ * turned off. That is, it either is sorting ascending or descending of the
+ * column you clicked. In other words, there are two toggleable options, not
+ * three (the third being none sort).
+ *
+ * @param {String} nameOfColumnToSortBy this is the column that was selected
+ * to sort by in the table
+ */
+export function customInitialSortDirection(nameOfColumnToSortBy, headers) {
+  let headerToSortBy = headers.find(h => h.value === nameOfColumnToSortBy);
+
+  return (
+    !isObjectUndefinedEmptyOrNull(headerToSortBy) &&
+    headerToSortBy.sortDescFirst
+  );
+}

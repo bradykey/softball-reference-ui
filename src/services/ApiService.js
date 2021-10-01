@@ -49,5 +49,8 @@ export default {
    */
   getSeasonSummaryStatLines(teamLeagueId) {
     return apiClient.get('/teamleagues/' + teamLeagueId);
+  },
+  getGamesByTeamLeague(teamLeagueId) {
+    return apiClient.get('/teamleagues/' + teamLeagueId + '/games');
   }
 };

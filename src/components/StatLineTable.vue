@@ -108,7 +108,7 @@ import * as Utils from '@/utils/utils';
 import * as Constants from '@/utils/constants';
 
 export default {
-  name: 'Home',
+  name: 'StatLineTable',
   props: {
     /**
      * The collection of statlines that will make up the table.
@@ -157,6 +157,8 @@ export default {
      * turned off. That is, it either is sorting ascending or descending of the
      * column you clicked. In other words, there are two toggleable options, not
      * three (the third being none sort).
+     *
+     * TODO: Make this re-usable somehow... The nextTick part is confusing me.
      *
      * @param {String} nameOfColumnToSortBy this is the column that was selected
      * to sort by in the table

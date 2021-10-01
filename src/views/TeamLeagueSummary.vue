@@ -26,21 +26,44 @@
       </v-col>
     </v-row>
 
-    <StatLineTable
-      v-if="!Utils.isObjectUndefinedEmptyOrNull(seasonSummary)"
-      :statLines="seasonSummary.players.map(p => Utils.flattenObject(p))"
-      :accumulatedStats="seasonSummary.accumulated.statLine"
+    <v-row>
+      <v-col cols="12">
+        <StatLineTable
+          v-if="!Utils.isObjectUndefinedEmptyOrNull(seasonSummary)"
+          :statLines="seasonSummary.players.map(p => Utils.flattenObject(p))"
+          :accumulatedStats="seasonSummary.accumulated.statLine"
+        />
+      </v-col>
+    </v-row>
+
+    <SectionHeader
+      title="Games"
+      :color="CustomColors.softball_yellow"
+      :outlined="true"
+      class="my-10"
     />
+
+    <v-row justify="center">
+      <v-col cols="12" lg="8">
+        <GameSummaryTable
+          v-if="!Utils.isObjectUndefinedEmptyOrNull(games)"
+          :games="games.map(g => Utils.flattenObject(g))"
+        />
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 
 <script>
+import GameSummaryTable from '@/components/GameSummaryTable.vue';
+import SectionHeader from '@/components/SectionHeader.vue';
 import StatLineTable from '@/components/StatLineTable.vue';
 import TitleCard from '@/components/TitleCard.vue';
 import ApiService from '@/services/ApiService';
 import CustomColors from '@/plugins/vuetify/theme.js';
 import { computed, reactive, toRefs, watch } from '@vue/composition-api';
 import * as Utils from '@/utils/utils.js';
+import * as LoadingBar from '@/composables/useLoadingBar';
 
 export default {
   name: 'TeamLeagueSummary',
@@ -52,7 +75,9 @@ export default {
   },
   components: {
     TitleCard,
-    StatLineTable
+    SectionHeader,
+    StatLineTable,
+    GameSummaryTable
   },
   setup(props) {
     const state = reactive({
@@ -62,7 +87,8 @@ export default {
        */
       teamLeagues: null,
       currTeamLeague: null,
-      seasonSummary: null
+      seasonSummary: null,
+      games: null
     });
 
     const team = computed(() => {
@@ -102,6 +128,7 @@ export default {
       else return state.seasonSummary.wins + '-' + state.seasonSummary.losses;
     });
 
+    LoadingBar.turnOnLoadingBar();
     /*
      * Fetch the teamleagues associated with the TeamName in the prop and fill
      * the select dropdown.
@@ -111,12 +138,15 @@ export default {
     )
       .then(response => {
         state.teamLeagues = response.data;
-        // sort in descending order, newst to oldest year
+        // sort in descending order, newest to oldest year
         state.teamLeagues.sort((a, b) => b.teamLeagueId - a.teamLeagueId);
         // default the selection to the latest year
         state.currTeamLeague = state.teamLeagues[0];
       })
-      .catch(error => console.log(error));
+      .catch(error => console.log(error))
+      .finally(() => {
+        LoadingBar.turnOffLoadingBar();
+      });
 
     /*
      * The state reactive object is reactive as a whole, but each property is
@@ -130,6 +160,7 @@ export default {
     watch(
       () => state.currTeamLeague,
       newCurrTeamLeague => {
+        LoadingBar.turnOnLoadingBar();
         if (!Utils.isObjectUndefinedEmptyOrNull(newCurrTeamLeague))
           // fetch the single season summary
           ApiService.getSeasonSummaryStatLines(
@@ -171,6 +202,19 @@ export default {
               // clear the season summary and log the error
               state.seasonSummary = null;
               console.log(error);
+            })
+            .finally(() => {
+              LoadingBar.turnOffLoadingBar();
+            });
+        if (!Utils.isObjectUndefinedEmptyOrNull(newCurrTeamLeague))
+          // fetch the games
+          ApiService.getGamesByTeamLeague(newCurrTeamLeague.teamLeagueId)
+            .then(response => {
+              state.games = response.data;
+            })
+            .catch(error => console.log(error))
+            .finally(() => {
+              LoadingBar.turnOffLoadingBar();
             });
       },
       { immediate: true }
