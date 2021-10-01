@@ -43,6 +43,12 @@
     </v-app-bar>
 
     <v-main>
+      <v-progress-linear
+        :active="isLoading"
+        :indeterminate="isLoading"
+        absolute
+        color="softball_yellow"
+      />
       <!-- **NOTE:** Vue won't reload your page when you re-navigate to a page
       you already have loaded, even if the dynamic segments or query parameters
       have changed. Therefore, we can use this shortcut to force Vue to treat
@@ -56,9 +62,11 @@
 </template>
 
 <script>
-import { reactive, toRefs } from '@vue/composition-api';
+import { computed, reactive, toRefs } from '@vue/composition-api';
 import ApiService from './services/ApiService';
+import * as LoadingBar from '@/composables/useLoadingBar';
 import router from './router/router';
+import store from './store/store';
 export default {
   name: 'App',
   setup() {
@@ -67,8 +75,11 @@ export default {
       selectedTeam: null
     });
 
+    const isLoading = computed(() => store.state.isLoading);
+
+    LoadingBar.turnOnLoadingBar();
     /*
-     * Fetch the teams and fill the select dropdown.
+     * Fetch the teams and fill the select menu.
      */
     ApiService.getTeams()
       .then(response => {
@@ -76,7 +87,10 @@ export default {
         // sort alphabetically
         state.teams.sort();
       })
-      .catch(error => console.log(error));
+      .catch(error => console.log(error))
+      .finally(() => {
+        LoadingBar.turnOffLoadingBar();
+      });
 
     function goToSelectedTeam(teamName) {
       router.push({
@@ -85,7 +99,7 @@ export default {
       });
     }
 
-    return { ...toRefs(state), goToSelectedTeam };
+    return { ...toRefs(state), goToSelectedTeam, isLoading };
   }
 };
 </script>
