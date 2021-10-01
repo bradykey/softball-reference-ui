@@ -24,75 +24,75 @@
           <div v-if="header.text == 'Player'">Team Totals</div>
 
           <div v-else-if="header.text == 'PA'">
-            {{ accumulatedStats.statLine.pa }}
+            {{ accumulatedStats.pa }}
           </div>
 
           <div v-else-if="header.text == 'AB'">
-            {{ accumulatedStats.statLine.ab }}
+            {{ accumulatedStats.ab }}
           </div>
 
           <div v-else-if="header.text == 'R'">
-            {{ accumulatedStats.statLine.r }}
+            {{ accumulatedStats.r }}
           </div>
 
           <div v-else-if="header.text == 'H'">
-            {{ accumulatedStats.statLine.h }}
+            {{ accumulatedStats.h }}
           </div>
 
           <div v-else-if="header.text == '1B'">
-            {{ accumulatedStats.statLine.b1 }}
+            {{ accumulatedStats.b1 }}
           </div>
 
           <div v-else-if="header.text == '2B'">
-            {{ accumulatedStats.statLine.b2 }}
+            {{ accumulatedStats.b2 }}
           </div>
 
           <div v-else-if="header.text == '3B'">
-            {{ accumulatedStats.statLine.b3 }}
+            {{ accumulatedStats.b3 }}
           </div>
 
           <div v-else-if="header.text == 'HR'">
-            {{ accumulatedStats.statLine.hr }}
+            {{ accumulatedStats.hr }}
           </div>
 
           <div v-else-if="header.text == 'RBI'">
-            {{ accumulatedStats.statLine.rbi }}
+            {{ accumulatedStats.rbi }}
           </div>
 
           <div v-else-if="header.text == 'BB'">
-            {{ accumulatedStats.statLine.bb }}
+            {{ accumulatedStats.bb }}
           </div>
 
           <div v-else-if="header.text == 'SO'">
-            {{ accumulatedStats.statLine.so }}
+            {{ accumulatedStats.so }}
           </div>
 
           <div v-else-if="header.text == 'SAC'">
-            {{ accumulatedStats.statLine.sac }}
+            {{ accumulatedStats.sac }}
           </div>
 
           <div v-else-if="header.text == 'FoulOut'">
-            {{ accumulatedStats.statLine.fo }}
+            {{ accumulatedStats.fo }}
           </div>
 
           <div v-else-if="header.text == 'GIDP'">
-            {{ accumulatedStats.statLine.gidp }}
+            {{ accumulatedStats.gidp }}
           </div>
 
           <div v-else-if="header.text == 'BA'">
-            {{ accumulatedStats.statLine.avg }}
+            {{ accumulatedStats.avg }}
           </div>
 
           <div v-else-if="header.text == 'OBP'">
-            {{ accumulatedStats.statLine.obp }}
+            {{ accumulatedStats.obp }}
           </div>
 
           <div v-else-if="header.text == 'SLG'">
-            {{ accumulatedStats.statLine.slg }}
+            {{ accumulatedStats.slg }}
           </div>
 
           <div v-else-if="header.text == 'OPS'">
-            {{ accumulatedStats.statLine.ops }}
+            {{ accumulatedStats.ops }}
           </div>
 
           <div v-else>--</div>
@@ -132,7 +132,7 @@ export default {
       headers: [
         {
           text: 'Player',
-          value: 'accumulated.statLine.playerName',
+          value: 'playerName',
           class: 'softball_red',
           width: '150px',
           sortDescFirst: false
@@ -140,7 +140,7 @@ export default {
         ...Constants.baseStatsHeaders,
         ...Constants.plusStatsHeaders
       ],
-      sortBy: 'accumulated.statLine.playerName',
+      sortBy: 'playerName',
       sortDesc: false
     });
 

@@ -23,126 +23,126 @@
 export const baseStatsHeaders = [
   {
     text: 'PA',
-    value: 'accumulated.statLine.pa',
+    value: 'pa',
     class: 'softball_red',
     width: '65px',
     sortDescFirst: true
   },
   {
     text: 'AB',
-    value: 'accumulated.statLine.ab',
+    value: 'ab',
     class: 'softball_red',
     width: '67px',
     sortDescFirst: true
   },
   {
     text: 'R',
-    value: 'accumulated.statLine.r',
+    value: 'r',
     class: 'softball_red',
     width: '65px',
     sortDescFirst: true
   },
   {
     text: 'H',
-    value: 'accumulated.statLine.h',
+    value: 'h',
     class: 'softball_red',
     width: '65px',
     sortDescFirst: true
   },
   {
     text: '1B',
-    value: 'accumulated.statLine.b1',
+    value: 'b1',
     class: 'softball_red',
     width: '65px',
     sortDescFirst: true
   },
   {
     text: '2B',
-    value: 'accumulated.statLine.b2',
+    value: 'b2',
     class: 'softball_red',
     width: '65px',
     sortDescFirst: true
   },
   {
     text: '3B',
-    value: 'accumulated.statLine.b3',
+    value: 'b3',
     class: 'softball_red',
     width: '65px',
     sortDescFirst: true
   },
   {
     text: 'HR',
-    value: 'accumulated.statLine.hr',
+    value: 'hr',
     class: 'softball_red',
     width: '67px',
     sortDescFirst: true
   },
   {
     text: 'RBI',
-    value: 'accumulated.statLine.rbi',
+    value: 'rbi',
     class: 'softball_red',
     width: '70px',
     sortDescFirst: true
   },
   {
     text: 'BB',
-    value: 'accumulated.statLine.bb',
+    value: 'bb',
     class: 'softball_red',
     width: '67px',
     sortDescFirst: true
   },
   {
     text: 'SO',
-    value: 'accumulated.statLine.so',
+    value: 'so',
     class: 'softball_red',
     width: '67px',
     sortDescFirst: false
   },
   {
     text: 'SAC',
-    value: 'accumulated.statLine.sac',
+    value: 'sac',
     class: 'softball_red',
     width: '75px',
     sortDescFirst: true
   },
   {
     text: 'FoulOut',
-    value: 'accumulated.statLine.fo',
+    value: 'fo',
     class: 'softball_red',
     width: '95px',
     sortDescFirst: false
   },
   {
     text: 'GIDP',
-    value: 'accumulated.statLine.gidp',
+    value: 'gidp',
     class: 'softball_red',
     width: '95px',
     sortDescFirst: false
   },
   {
     text: 'BA',
-    value: 'accumulated.statLine.avg',
+    value: 'avg',
     class: 'softball_red',
     width: '67px',
     sortDescFirst: true
   },
   {
     text: 'OBP',
-    value: 'accumulated.statLine.obp',
+    value: 'obp',
     class: 'softball_red',
     width: '75px',
     sortDescFirst: true
   },
   {
     text: 'SLG',
-    value: 'accumulated.statLine.slg',
+    value: 'slg',
     class: 'softball_red',
     width: '75px',
     sortDescFirst: true
   },
   {
     text: 'OPS',
-    value: 'accumulated.statLine.ops',
+    value: 'ops',
     class: 'softball_red',
     width: '75px',
     sortDescFirst: true
@@ -150,7 +150,7 @@ export const baseStatsHeaders = [
 ];
 
 /**
- * This is an array of header objects for the shared set of base stats:
+ * This is an array of header objects for the shared set of plus stats:
  * OBP+
  * SLG+
  * OPS+
@@ -158,21 +158,21 @@ export const baseStatsHeaders = [
 export const plusStatsHeaders = [
   {
     text: 'OBP+',
-    value: 'accumulated.obpplus',
+    value: 'obpplus',
     class: 'softball_red',
     width: '85px',
     sortDescFirst: true
   },
   {
     text: 'SLG+',
-    value: 'accumulated.slgplus',
+    value: 'slgplus',
     class: 'softball_red',
     width: '80px',
     sortDescFirst: true
   },
   {
     text: 'OPS+',
-    value: 'accumulated.opsplus',
+    value: 'opsplus',
     class: 'softball_red',
     width: '80px',
     sortDescFirst: true

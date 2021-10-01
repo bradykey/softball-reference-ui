@@ -17,3 +17,27 @@ export function isObjectUndefinedEmptyOrNull(someObject) {
 export function formatHypenSpacedWordsToSpaces(text) {
   return text.replace(/-/g, ' ');
 }
+
+/**
+ * Flatten a multidimensional object
+ *
+ * For example:
+ *   flattenObject({ a: 1, b: { c: 2 } })
+ * Returns:
+ *   { a: 1, c: 2}
+ */
+export function flattenObject(obj) {
+  const flattened = {};
+
+  Object.keys(obj).forEach(key => {
+    if (typeof obj[key] === 'object' && obj[key] !== null) {
+      // recurse and add result to flattened object
+      Object.assign(flattened, flattenObject(obj[key]));
+    } else {
+      // just a property; add it to flatted object
+      flattened[key] = obj[key];
+    }
+  });
+
+  return flattened;
+}
