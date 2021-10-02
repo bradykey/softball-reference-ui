@@ -23,10 +23,10 @@ const routes = [
   {
     path: '/games/:gameId',
     name: 'GameSummary',
+    // TODO: https://router.vuejs.org/guide/essentials/passing-props.html#function-mode
+    // store currTeamLeague in the route as a query param
+    // route => ({ query: route.query.q })
     props: true,
-    // beforeEnter: (to, from, next) => {
-    //   // ...
-    // },
     component: () => import('../views/GameSummary.vue')
   }
 ];

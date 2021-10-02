@@ -73,6 +73,10 @@ export default {
     teamName: {
       type: String,
       required: true
+    },
+    currTeamLeague: {
+      type: Object,
+      default: null
     }
   },
   components: {
@@ -88,7 +92,6 @@ export default {
        * name. Now we don't have to have a route with ids we don't know...
        */
       teamLeagues: null,
-      currTeamLeague: null,
       seasonSummary: null,
       games: null
     });
@@ -142,8 +145,9 @@ export default {
         state.teamLeagues = response.data;
         // sort in descending order, newest to oldest year
         state.teamLeagues.sort((a, b) => b.teamLeagueId - a.teamLeagueId);
-        // default the selection to the latest year
-        state.currTeamLeague = state.teamLeagues[0];
+        if (Utils.isObjectUndefinedEmptyOrNull(props.currTeamLeague))
+          // default the selection to the latest year
+          props.currTeamLeague = state.teamLeagues[0];
       })
       .catch(error => console.log(error))
       .finally(() => {
@@ -151,7 +155,7 @@ export default {
       });
 
     /*
-     * The state reactive object is reactive as a whole, but each property is
+     * The props reactive object is reactive as a whole, but each property is
      * not reactive on its on. We need to adjust the watch signature (by having
      * it take an annonymous function that returns the state.currTeamLeagueId)
      * since watch methods must watch ref objects. I could also just have this
@@ -160,13 +164,13 @@ export default {
      * const currTeamLeagueId = ref(true);
      */
     watch(
-      () => state.currTeamLeague,
+      () => props.currTeamLeague,
       newCurrTeamLeague => {
         LoadingBar.turnOnLoadingBar();
         if (!Utils.isObjectUndefinedEmptyOrNull(newCurrTeamLeague))
           // fetch the single season summary
           ApiService.getSeasonSummaryStatLines(
-            state.currTeamLeague.teamLeagueId
+            props.currTeamLeague.teamLeagueId
           )
             .then(response => {
               // convert the aggregate columns to 3 decimal places
