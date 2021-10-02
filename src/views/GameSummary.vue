@@ -1,5 +1,8 @@
 <template>
   <v-container v-if="!Utils.isObjectUndefinedEmptyOrNull(game)">
+    <!-- <router-link :to="{ path: $store.state.route.from.fullPath }">
+      Back
+    </router-link> -->
     <v-row>
       <v-col>
         <TitleCard

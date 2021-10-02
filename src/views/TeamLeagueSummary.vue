@@ -74,8 +74,8 @@ export default {
       type: String,
       required: true
     },
-    currTeamLeague: {
-      type: Object,
+    teamLeague: {
+      type: String,
       default: null
     }
   },
@@ -92,6 +92,7 @@ export default {
        * name. Now we don't have to have a route with ids we don't know...
        */
       teamLeagues: null,
+      currTeamLeague: null,
       seasonSummary: null,
       games: null
     });
@@ -138,16 +139,22 @@ export default {
      * Fetch the teamleagues associated with the TeamName in the prop and fill
      * the select dropdown.
      */
-    ApiService.getTeamLeaguesByName(
+    ApiService.getTeamLeaguesByTeam(
       Utils.formatHypenSpacedWordsToSpaces(props.teamName)
     )
       .then(response => {
         state.teamLeagues = response.data;
-        // sort in descending order, newest to oldest year
-        state.teamLeagues.sort((a, b) => b.teamLeagueId - a.teamLeagueId);
-        if (Utils.isObjectUndefinedEmptyOrNull(props.currTeamLeague))
+        if (Utils.isObjectUndefinedEmptyOrNull(props.teamLeague)) {
+          // sort in descending order, newest to oldest year
+          state.teamLeagues.sort((a, b) => b.teamLeagueId - a.teamLeagueId);
           // default the selection to the latest year
-          props.currTeamLeague = state.teamLeagues[0];
+          state.currTeamLeague = state.teamLeagues[0];
+        } else {
+          // set it to the one that matches the query param
+          state.currTeamLeague = state.teamLeagues.find(
+            tL => (tL.league = props.teamLeague)
+          );
+        }
       })
       .catch(error => console.log(error))
       .finally(() => {
@@ -164,13 +171,13 @@ export default {
      * const currTeamLeagueId = ref(true);
      */
     watch(
-      () => props.currTeamLeague,
+      () => state.currTeamLeague,
       newCurrTeamLeague => {
         LoadingBar.turnOnLoadingBar();
-        if (!Utils.isObjectUndefinedEmptyOrNull(newCurrTeamLeague))
+        if (!Utils.isObjectUndefinedEmptyOrNull(newCurrTeamLeague)) {
           // fetch the single season summary
           ApiService.getSeasonSummaryStatLines(
-            props.currTeamLeague.teamLeagueId
+            state.currTeamLeague.teamLeagueId
           )
             .then(response => {
               // convert the aggregate columns to 3 decimal places
@@ -212,7 +219,7 @@ export default {
             .finally(() => {
               LoadingBar.turnOffLoadingBar();
             });
-        if (!Utils.isObjectUndefinedEmptyOrNull(newCurrTeamLeague))
+
           // fetch the games
           ApiService.getGamesByTeamLeague(newCurrTeamLeague.teamLeagueId)
             .then(response => {
@@ -222,6 +229,7 @@ export default {
             .finally(() => {
               LoadingBar.turnOffLoadingBar();
             });
+        }
       },
       { immediate: true }
     );
@@ -234,6 +242,11 @@ export default {
       CustomColors,
       Utils
     };
+  },
+  beforeRouteLeave(to, from, next) {
+    // right before you leave, make sure to add the currently selected teamleague to the query param
+    from.query.teamLeague = this.currTeamLeague.league;
+    next();
   }
 };
 </script>

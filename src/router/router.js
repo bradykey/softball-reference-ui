@@ -14,7 +14,11 @@ const routes = [
   {
     path: '/teams/:teamName',
     name: 'TeamLeagueSummary',
-    props: true,
+    // Use function mode to pass both params and query params as props
+    props: route => ({
+      teamName: route.params.teamName,
+      teamLeague: route.query.teamLeague
+    }),
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
@@ -23,9 +27,6 @@ const routes = [
   {
     path: '/games/:gameId',
     name: 'GameSummary',
-    // TODO: https://router.vuejs.org/guide/essentials/passing-props.html#function-mode
-    // store currTeamLeague in the route as a query param
-    // route => ({ query: route.query.q })
     props: true,
     component: () => import('../views/GameSummary.vue')
   }
