@@ -8,7 +8,7 @@
         :color="titleChipColor"
         :medium="$vuetify.breakpoint.smAndUp"
         :small="$vuetify.breakpoint.smOnly || $vuetify.breakpoint.xsOnly"
-        outlined
+        :outlined="outlinedChip"
         :ripple="false"
         dark
       >
@@ -64,6 +64,10 @@ export default {
     divider: {
       type: Boolean,
       default: false
+    },
+    outlinedChip: {
+      type: Boolean,
+      default: true
     }
   },
   setup() {

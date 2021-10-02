@@ -6,5 +6,6 @@ export default {
   // Here we add some custom color
   softball_red: '#cf2036',
   softball_yellow: '#c8f626',
+  anchor: '#c8f626',
   softball_grey: '#59595b'
 };

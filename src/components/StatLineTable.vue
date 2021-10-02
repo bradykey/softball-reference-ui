@@ -125,9 +125,19 @@ export default {
     accumulatedStats: {
       type: Object,
       required: true
+    },
+    /**
+     * Designates if the table is for the season summary or a game summary. If
+     * true, the table shows the plus stat columns and doesn't show the batting
+     * order header. If false, the table hides the plus stat columns and shows
+     * the batting order column.
+     */
+    isSeasonSummary: {
+      type: Boolean,
+      default: true
     }
   },
-  setup() {
+  setup(props) {
     const state = reactive({
       headers: [
         {
@@ -137,12 +147,28 @@ export default {
           width: '150px',
           sortDescFirst: false
         },
-        ...Constants.baseStatsHeaders,
-        ...Constants.plusStatsHeaders
+        ...Constants.baseStatsHeaders
       ],
       sortBy: 'playerName',
       sortDesc: false
     });
+
+    // Handle if the Batting Order column should be shown
+    if (props.isSeasonSummary) {
+      // add the plus stats columns
+      state.headers.push(...Constants.plusStatsHeaders);
+    } else {
+      // add the BO header
+      state.headers.unshift({
+        text: '',
+        value: 'bo',
+        class: 'softball_red',
+        width: '65px',
+        sortDescFirst: false
+      });
+      //... and sort by it
+      state.sortBy = 'bo';
+    }
 
     /**
      * By default, columns that are sorted using the built in "click-on-header"

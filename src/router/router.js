@@ -19,6 +19,15 @@ const routes = [
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
     component: () => import('../views/TeamLeagueSummary.vue')
+  },
+  {
+    path: '/games/:gameId',
+    name: 'GameSummary',
+    props: true,
+    // beforeEnter: (to, from, next) => {
+    //   // ...
+    // },
+    component: () => import('../views/GameSummary.vue')
   }
 ];
 

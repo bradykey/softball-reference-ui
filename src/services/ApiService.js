@@ -50,7 +50,25 @@ export default {
   getSeasonSummaryStatLines(teamLeagueId) {
     return apiClient.get('/teamleagues/' + teamLeagueId);
   },
+  /**
+   * Retrive the GameSummaries for a TeamLeague. This is wrapped in a
+   * GameSummaryResponse from the API and contains information about each game
+   * associated with this TeamLeague.
+   * @param {int} teamLeagueId the Id of the TeamLeague / Season to retrive the
+   * games of.
+   * @returns The array of GameSummaryResponses associated with the TeamLeagueId
+   * passed in.
+   */
   getGamesByTeamLeague(teamLeagueId) {
     return apiClient.get('/teamleagues/' + teamLeagueId + '/games');
+  },
+  /**
+   * Retrieve the Game by its Id. This contains all the information about the
+   * game as well as the StatLines of the Players who played that game.
+   * @param {int} gameId the Id of the Game to retrieve.
+   * @returns The Game associated with the gameId.
+   */
+  getGameById(gameId) {
+    return apiClient.get('/games/' + gameId);
   }
 };

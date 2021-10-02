@@ -13,6 +13,14 @@
     dense
     mobile-breakpoint="0"
   >
+    <template v-slot:item.opponent="{ item }">
+      <router-link
+        :to="{ name: 'GameSummary', params: { gameId: item.gameId } }"
+      >
+        {{ item.opponent }}
+      </router-link>
+    </template>
+
     <template v-slot:item.score="{ item }">
       <v-chip v-if="item.score > item.opponentScore">
         {{ item.score }}

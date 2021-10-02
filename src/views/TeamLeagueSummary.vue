@@ -32,6 +32,7 @@
           v-if="!Utils.isObjectUndefinedEmptyOrNull(seasonSummary)"
           :statLines="seasonSummary.players.map(p => Utils.flattenObject(p))"
           :accumulatedStats="seasonSummary.accumulated.statLine"
+          :isSeasonSummary="true"
         />
       </v-col>
     </v-row>

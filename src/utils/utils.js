@@ -67,3 +67,14 @@ export function customInitialSortDirection(nameOfColumnToSortBy, headers) {
     headerToSortBy.sortDescFirst
   );
 }
+
+/**
+ * Determines if the scores designate a win.
+ * @param {int} score
+ * @param {int} opponentScore
+ * @returns true if the score is greater than the opponent's score, false
+ * otherwise.
+ */
+export function didWin(score, opponentScore) {
+  return score > opponentScore;
+}
