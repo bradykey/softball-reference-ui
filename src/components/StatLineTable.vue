@@ -12,6 +12,7 @@
     hide-default-footer
     fixed-header
     dense
+    no-data-text="Stats weren't captured for this game"
     mobile-breakpoint="0"
   >
     <!-- Create a "sum" row that doesn't get sorted into the main logic of the

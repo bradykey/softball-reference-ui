@@ -96,18 +96,21 @@ export default {
      */
     ApiService.getGameById(props.gameId)
       .then(response => {
-        // convert the aggregate columns to 3 decimal places
-        response.data.accumulated.statLine['avg'] =
-          response.data.accumulated.statLine['avg'].toFixed(3);
+        // only try to do this if there are stats captured for this game...
+        if (response.data.statLines.length > 0) {
+          // convert the aggregate columns to 3 decimal places
+          response.data.accumulated.statLine['avg'] =
+            response.data.accumulated.statLine['avg'].toFixed(3);
 
-        response.data.accumulated.statLine['obp'] =
-          response.data.accumulated.statLine['obp'].toFixed(3);
+          response.data.accumulated.statLine['obp'] =
+            response.data.accumulated.statLine['obp'].toFixed(3);
 
-        response.data.accumulated.statLine['slg'] =
-          response.data.accumulated.statLine['slg'].toFixed(3);
+          response.data.accumulated.statLine['slg'] =
+            response.data.accumulated.statLine['slg'].toFixed(3);
 
-        response.data.accumulated.statLine['ops'] =
-          response.data.accumulated.statLine['ops'].toFixed(3);
+          response.data.accumulated.statLine['ops'] =
+            response.data.accumulated.statLine['ops'].toFixed(3);
+        }
 
         response.data.statLines.forEach(sL => {
           sL['avg'] = sL['avg'].toFixed(3);
@@ -124,8 +127,6 @@ export default {
         state.game = response.data;
       })
       .catch(error => {
-        // clear the game and log the error
-        state.game = null;
         console.log(error);
       })
       .finally(() => {
