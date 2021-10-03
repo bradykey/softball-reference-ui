@@ -162,7 +162,7 @@ export default {
       });
 
     /*
-     * The props reactive object is reactive as a whole, but each property is
+     * The state reactive object is reactive as a whole, but each property is
      * not reactive on its on. We need to adjust the watch signature (by having
      * it take an annonymous function that returns the state.currTeamLeagueId)
      * since watch methods must watch ref objects. I could also just have this
@@ -176,9 +176,7 @@ export default {
         LoadingBar.turnOnLoadingBar();
         if (!Utils.isObjectUndefinedEmptyOrNull(newCurrTeamLeague)) {
           // fetch the single season summary
-          ApiService.getSeasonSummaryStatLines(
-            state.currTeamLeague.teamLeagueId
-          )
+          ApiService.getSeasonSummaryStatLines(newCurrTeamLeague.teamLeagueId)
             .then(response => {
               // convert the aggregate columns to 3 decimal places
               response.data.accumulated.statLine['avg'] =
@@ -193,21 +191,18 @@ export default {
               response.data.accumulated.statLine['ops'] =
                 response.data.accumulated.statLine['ops'].toFixed(3);
 
+              // only convert the aggregate columns if the player has had a plate appearance
               response.data.players.forEach(player => {
-                player.accumulated.statLine['avg'] =
-                  player.accumulated.statLine['avg'].toFixed(3);
-              });
-              response.data.players.forEach(player => {
-                player.accumulated.statLine['obp'] =
-                  player.accumulated.statLine['obp'].toFixed(3);
-              });
-              response.data.players.forEach(player => {
-                player.accumulated.statLine['slg'] =
-                  player.accumulated.statLine['slg'].toFixed(3);
-              });
-              response.data.players.forEach(player => {
-                player.accumulated.statLine['ops'] =
-                  player.accumulated.statLine['ops'].toFixed(3);
+                if (player.accumulated.statLine['pa'] > 0) {
+                  player.accumulated.statLine['avg'] =
+                    player.accumulated.statLine['avg'].toFixed(3);
+                  player.accumulated.statLine['obp'] =
+                    player.accumulated.statLine['obp'].toFixed(3);
+                  player.accumulated.statLine['slg'] =
+                    player.accumulated.statLine['slg'].toFixed(3);
+                  player.accumulated.statLine['ops'] =
+                    player.accumulated.statLine['ops'].toFixed(3);
+                }
               });
               state.seasonSummary = response.data;
             })

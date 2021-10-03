@@ -117,16 +117,11 @@ export default {
 
         response.data.statLines.forEach(sL => {
           sL['avg'] = sL['avg'].toFixed(3);
-        });
-        response.data.statLines.forEach(sL => {
           sL['obp'] = sL['obp'].toFixed(3);
-        });
-        response.data.statLines.forEach(sL => {
           sL['slg'] = sL['slg'].toFixed(3);
-        });
-        response.data.statLines.forEach(sL => {
           sL['ops'] = sL['ops'].toFixed(3);
         });
+
         state.game = response.data;
       })
       .catch(error => {
