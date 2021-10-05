@@ -144,7 +144,7 @@ export default {
     )
       .then(response => {
         state.teamLeagues = response.data;
-        if (Utils.isObjectUndefinedEmptyOrNull(props.teamLeague)) {
+        if (Utils.isObjectUndefinedEmptyOrNull(state.teamLeague)) {
           // sort in descending order, newest to oldest year
           state.teamLeagues.sort((a, b) => b.teamLeagueId - a.teamLeagueId);
           // default the selection to the latest year
