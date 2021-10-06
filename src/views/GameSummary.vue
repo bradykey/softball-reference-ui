@@ -58,7 +58,7 @@ export default {
 
     const gameTitle = computed(() => {
       if (Utils.isObjectUndefinedEmptyOrNull(state.game)) return '';
-      else return (state.game.wasHome ? 'vs ' : '@ ') + state.game.opponent;
+      else return (state.game.wasHome ? '' : '@ ') + state.game.opponent;
     });
 
     const score = computed(() => {
