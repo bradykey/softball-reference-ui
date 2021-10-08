@@ -131,7 +131,7 @@ export default {
             : '') +
           (state.seasonSummary.runs - state.seasonSummary.runsAllowed) +
           ' | ' +
-          'Streak: ' +
+          'Strk: ' +
           (state.seasonSummary.winStreak > state.seasonSummary.lossStreak
             ? 'W' + state.seasonSummary.winStreak
             : 'L' + state.seasonSummary.lossStreak)
