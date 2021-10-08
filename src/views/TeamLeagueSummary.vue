@@ -11,8 +11,8 @@
         />
       </v-col>
     </v-row>
-    <v-row justify="end">
-      <v-col cols="12" md="4">
+    <v-row>
+      <v-col cols="12" md="4" class="pb-0 mb-0">
         <v-select
           v-if="!Utils.isObjectUndefinedEmptyOrNull(teamLeagues)"
           :items="teamLeagues"
@@ -24,41 +24,50 @@
           return-object
         />
       </v-col>
-    </v-row>
-
-    <v-row>
-      <v-col cols="12">
-        <StatLineTable
-          v-if="!Utils.isObjectUndefinedEmptyOrNull(seasonSummary)"
-          :statLines="seasonSummary.players.map(p => Utils.flattenObject(p))"
-          :accumulatedStats="seasonSummary.accumulated.statLine"
-          :isSeasonSummary="true"
-        />
+      <v-col cols="12" md="8" class="pt-0 mt-0 mb-3 pt-md-3 mb-md-0">
+        <v-tabs
+          v-model="selectedTab"
+          background-color="transparent"
+          color="softball_yellow"
+        >
+          <v-tab>Season</v-tab>
+          <v-tab>Games</v-tab>
+        </v-tabs>
       </v-col>
     </v-row>
 
-    <SectionHeader
-      v-if="!Utils.isObjectUndefinedEmptyOrNull(games)"
-      title="Games"
-      :color="CustomColors.softball_yellow"
-      :outlined="true"
-      class="my-10"
-    />
+    <v-tabs-items v-model="selectedTab">
+      <v-tab-item>
+        <v-row>
+          <v-col cols="12">
+            <StatLineTable
+              v-if="!Utils.isObjectUndefinedEmptyOrNull(seasonSummary)"
+              :statLines="
+                seasonSummary.players.map(p => Utils.flattenObject(p))
+              "
+              :accumulatedStats="seasonSummary.accumulated.statLine"
+              :isSeasonSummary="true"
+            />
+          </v-col>
+        </v-row>
+      </v-tab-item>
 
-    <v-row justify="center">
-      <v-col cols="12" lg="8">
-        <GameSummaryTable
-          v-if="!Utils.isObjectUndefinedEmptyOrNull(games)"
-          :games="games.map(g => Utils.flattenObject(g))"
-        />
-      </v-col>
-    </v-row>
+      <v-tab-item>
+        <v-row>
+          <v-col cols="12">
+            <GameSummaryTable
+              v-if="!Utils.isObjectUndefinedEmptyOrNull(games)"
+              :games="games.map(g => Utils.flattenObject(g))"
+            />
+          </v-col>
+        </v-row>
+      </v-tab-item>
+    </v-tabs-items>
   </v-container>
 </template>
 
 <script>
 import GameSummaryTable from '@/components/GameSummaryTable.vue';
-import SectionHeader from '@/components/SectionHeader.vue';
 import StatLineTable from '@/components/StatLineTable.vue';
 import TitleCard from '@/components/TitleCard.vue';
 import ApiService from '@/services/ApiService';
@@ -81,7 +90,6 @@ export default {
   },
   components: {
     TitleCard,
-    SectionHeader,
     StatLineTable,
     GameSummaryTable
   },
@@ -94,7 +102,8 @@ export default {
       teamLeagues: null,
       currTeamLeague: null,
       seasonSummary: null,
-      games: null
+      games: null,
+      selectedTab: null
     });
 
     const team = computed(() => {

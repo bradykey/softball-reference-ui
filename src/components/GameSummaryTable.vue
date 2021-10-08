@@ -84,13 +84,13 @@ export default {
           text: 'Opponent',
           value: 'opponent',
           class: 'softball_red',
-          width: '30%'
+          width: '150px'
         },
         {
           text: 'W/L',
           value: 'winLoss',
           class: 'softball_red',
-          width: '8%'
+          width: '75px'
         },
         {
           text: 'R',
