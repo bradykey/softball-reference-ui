@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <v-app-bar app color="black" dark>
+    <v-app-bar app color="black" dark style="z-index: 10000">
       <div class="d-flex align-center">
         <router-link :to="{ name: 'Home' }">
           <v-img
