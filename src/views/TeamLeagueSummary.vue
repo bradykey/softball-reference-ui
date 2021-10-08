@@ -30,14 +30,14 @@
           background-color="transparent"
           color="softball_yellow"
         >
-          <v-tab>Season</v-tab>
-          <v-tab>Games</v-tab>
+          <v-tab key="season">Season</v-tab>
+          <v-tab key="games">Games</v-tab>
         </v-tabs>
       </v-col>
     </v-row>
 
-    <v-tabs-items v-model="selectedTab">
-      <v-tab-item>
+    <v-tabs-items v-model="selectedTab" touchless>
+      <v-tab-item key="season">
         <v-row>
           <v-col cols="12">
             <StatLineTable
@@ -52,7 +52,7 @@
         </v-row>
       </v-tab-item>
 
-      <v-tab-item>
+      <v-tab-item key="games">
         <v-row>
           <v-col cols="12">
             <GameSummaryTable
