@@ -15,6 +15,7 @@
       <v-col cols="12" md="4" class="pb-0 mb-0">
         <v-select
           v-if="!Utils.isObjectUndefinedEmptyOrNull(teamLeagues)"
+          style="z-index: 10000"
           :items="teamLeagues"
           item-text="league"
           item-value="teamLeagueId"
