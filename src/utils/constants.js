@@ -36,15 +36,15 @@ export const baseStatsHeaders = [
     sortDescFirst: true
   },
   {
-    text: 'R',
-    value: 'r',
+    text: 'H',
+    value: 'h',
     class: 'softball_red',
     width: '65px',
     sortDescFirst: true
   },
   {
-    text: 'H',
-    value: 'h',
+    text: 'R',
+    value: 'r',
     class: 'softball_red',
     width: '65px',
     sortDescFirst: true
@@ -113,10 +113,17 @@ export const baseStatsHeaders = [
     sortDescFirst: false
   },
   {
+    text: 'HR4O',
+    value: 'hr4O',
+    class: 'softball_red',
+    width: '85px',
+    sortDescFirst: false
+  },
+  {
     text: 'GIDP',
     value: 'gidp',
     class: 'softball_red',
-    width: '95px',
+    width: '85px',
     sortDescFirst: false
   },
   {

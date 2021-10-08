@@ -32,12 +32,12 @@
             {{ accumulatedStats.ab }}
           </div>
 
-          <div v-else-if="header.text == 'R'">
-            {{ accumulatedStats.r }}
-          </div>
-
           <div v-else-if="header.text == 'H'">
             {{ accumulatedStats.h }}
+          </div>
+
+          <div v-else-if="header.text == 'R'">
+            {{ accumulatedStats.r }}
           </div>
 
           <div v-else-if="header.text == '1B'">
@@ -74,6 +74,10 @@
 
           <div v-else-if="header.text == 'FoulOut'">
             {{ accumulatedStats.fo }}
+          </div>
+
+          <div v-else-if="header.text == 'HR4O'">
+            {{ accumulatedStats.hr4O }}
           </div>
 
           <div v-else-if="header.text == 'GIDP'">
