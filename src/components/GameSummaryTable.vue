@@ -111,7 +111,7 @@ export default {
           width: '20%'
         }
       ],
-      sortBy: 'splitDate',
+      sortBy: 'date',
       sortDesc: true
     });
 
