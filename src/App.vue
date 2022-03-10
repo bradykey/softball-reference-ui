@@ -7,7 +7,7 @@
             alt="Softball-Reference.com Logo"
             class="shrink mr-2"
             contain
-            src="@/assets/sr-logo-com-no-flag.png"
+            src="@/assets/sr-logo-com-hand-drawn.png"
             transition="scale-transition"
             :width="$vuetify.breakpoint.smAndUp ? 250 : 175"
           />
