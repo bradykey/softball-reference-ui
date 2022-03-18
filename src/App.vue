@@ -93,6 +93,9 @@ export default {
       });
 
     function goToSelectedTeam(teamName) {
+      /*
+       * Router push converts spaces to %20 automatically
+       */
       router.push({
         name: 'TeamLeagueSummary',
         params: { teamName: teamName }

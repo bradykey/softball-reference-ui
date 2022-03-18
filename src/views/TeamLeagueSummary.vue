@@ -148,13 +148,17 @@ export default {
     /*
      * Fetch the teamleagues associated with the TeamName in the prop and fill
      * the select dropdown.
+     *
+     * I used to convert the kebob cased teamName to be spaces, but
+     * Softball-Reference.com as a team screws that up. So using the %20 as a
+     * space works best.
+     *
+     * Utils.formatHypenSpacedWordsToSpaces(props.teamName)
      */
-    ApiService.getTeamLeaguesByTeam(
-      Utils.formatHypenSpacedWordsToSpaces(props.teamName)
-    )
+    ApiService.getTeamLeaguesByTeam(props.teamName)
       .then(response => {
         state.teamLeagues = response.data;
-        if (Utils.isObjectUndefinedEmptyOrNull(state.teamLeagues)) {
+        if (Utils.isObjectUndefinedEmptyOrNull(props.teamLeague)) {
           // sort in descending order, newest to oldest year
           state.teamLeagues.sort((a, b) => b.teamLeagueId - a.teamLeagueId);
           // default the selection to the latest year
