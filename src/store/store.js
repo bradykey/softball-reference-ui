@@ -5,7 +5,7 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
-    /* Flag to let all components know if a loading bar shoudl be running. */
+    /* Flag to let all components know if a loading bar should be running. */
     isLoading: false
   },
   mutations: {
@@ -20,7 +20,7 @@ export default new Vuex.Store({
      *
      * @param {Context} context the automatically passed in context object that
      * contains: state (same as store.state, or local state if in modules),
-     * rootState (same as store.state, only in modules), commite (same as
+     * rootState (same as store.state, only in modules), commit (same as
      * store.commit), dispatch (same as store.dispatch), getters (same as
      * store.getters, or local getters if in modules), rootGetters (same as
      * store.getters, only in modules)
