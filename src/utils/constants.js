@@ -1,6 +1,5 @@
 /**
  * This is an array of header objects for the shared set of base stats:
- *
  * PA
  * AB
  * R
