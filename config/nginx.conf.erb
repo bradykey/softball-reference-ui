@@ -16,15 +16,8 @@ http {
   gzip_proxied any;
 
   server_tokens off;
-
-
   access_log logs/access.log;
-
-
-
   error_log stderr error;
-
-
   include mime.types;
   default_type application/octet-stream;
   sendfile on;
@@ -38,51 +31,52 @@ http {
     port_in_redirect off;
     keepalive_timeout 5;
     root dist;
-  
-  
 
-  
+    #resolver 10.1.0.2 8.8.8.8;
 
-    mruby_post_read_handler /app/bin/config/lib/ngx_mruby/headers.rb cache;
+    # Allow payloads of up to 10mb
+    client_max_body_size 10M;
+
+    # Redirect all non-https traffic to https
+    if ($http_x_forwarded_proto != "https") {
+      return 301 https://$host$request_uri;
+    }
+
+    location = /index.html {
+      add_header Cache-Control "no-store, no-cache";
+      add_header Strict-Transport-Security "max-age=31536002;";
+      add_header X-Content-Type-Options "nosniff";
+      add_header X-XSS-Protection "1; mode=block";
+      add_header Content-Security-Policy "default-src * 'unsafe-inline' 'unsafe-eval'; script-src * 'unsafe-inline' 'unsafe-eval'; connect-src * 'unsafe-inline'; img-src * data: blob: 'unsafe-inline'; frame-src *; style-src * 'unsafe-inline';";
+
+      try_files $uri $uri/ =404;
+    }
 
     location / {
-      mruby_set $fallback /app/bin/config/lib/ngx_mruby/routes_fallback.rb cache;
-    
-      try_files $uri.html $uri $uri/ $fallback;
-    
+      add_header 'Cache-Control' "public, max-age=3600";
+
+      try_files $uri $uri/ /index.html;
     }
 
-  
-    location ~ \.html$ {
-      try_files $uri =404;
+    location /manifest.json {
+      add_header Cache-Control "no-store, no-cache";
+      add_header Access-Control-Allow-Origin "*";
+
+      try_files $uri $uri/ =404;
     }
-  
 
-  
+    # Cache assets for a long time, since all of them get unique names on each build
+    location ~ ^/assets/[^/]*$ {
+      add_header Cache-Control "public, max-age=31536000";
+      add_header Access-Control-Allow-Origin "*";
 
-  
-
-  
-    location ~ ^/.*$ {
-      set $route /.*;
-      mruby_set $path /app/bin/config/lib/ngx_mruby/routes_path.rb cache;
-      mruby_set $fallback /app/bin/config/lib/ngx_mruby/routes_fallback.rb cache;
-    
-      try_files $uri.html $uri $uri/ $path $fallback;
-    
+      try_files $uri $uri/ =404;
     }
-  
 
-  # need this b/c setting $fallback to =404 will try #{root}=404 instead of returning a 404
-  location @404 {
-    return 404;
-  }
 
-  # fallback proxy named match
-  
-
-  # fallback redirects named match
-  
-
+    # Need this b/c setting $fallback to =404 will try #{root}=404 instead of returning a 404
+    location @404 {
+      return 404;
+    }
   }
 }
