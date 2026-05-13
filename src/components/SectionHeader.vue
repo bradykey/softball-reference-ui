@@ -4,7 +4,7 @@
       <v-col>
         <v-divider></v-divider>
       </v-col>
-      <v-chip :color="color" dark :outlined="outlined">
+      <v-chip :color="color" :variant="outlined ? 'outlined' : 'flat'">
         {{ title }}
       </v-chip>
       <v-col>

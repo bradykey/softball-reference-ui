@@ -1,8 +1,5 @@
 <template>
   <v-container v-if="!Utils.isObjectUndefinedEmptyOrNull(game)">
-    <!-- <router-link :to="{ path: $store.state.route.from.fullPath }">
-      Back
-    </router-link> -->
     <v-row>
       <v-col>
         <TitleCard
@@ -34,7 +31,7 @@ import StatLineTable from '@/components/StatLineTable.vue';
 import TitleCard from '@/components/TitleCard.vue';
 import ApiService from '@/services/ApiService';
 import CustomColors from '@/plugins/vuetify/theme.js';
-import { computed, reactive, toRefs } from '@vue/composition-api';
+import { computed, reactive, toRefs } from 'vue';
 import * as Utils from '@/utils/utils.js';
 import * as LoadingBar from '@/composables/useLoadingBar';
 
@@ -52,8 +49,7 @@ export default {
   },
   setup(props) {
     const state = reactive({
-      game: null,
-      prevRoute: null
+      game: null
     });
 
     const gameTitle = computed(() => {
@@ -94,14 +90,9 @@ export default {
     });
 
     LoadingBar.turnOnLoadingBar();
-    /*
-     * Fetch the games associated with the GameId in the prop
-     */
     ApiService.getGameById(props.gameId)
       .then(response => {
-        // only try to do this if there are stats captured for this game...
         if (response.data.statLines.length > 0) {
-          // convert the aggregate columns to 3 decimal places
           response.data.accumulated.statLine['avg'] =
             response.data.accumulated.statLine['avg'].toFixed(3);
 
@@ -139,12 +130,6 @@ export default {
       CustomColors,
       Utils
     };
-  },
-  beforeRouteEnter(to, from, next) {
-    // this is a callback to the route so we can get access to the view model once it's been created (i.e. this)
-    next(vm => {
-      vm.prevRoute = from;
-    });
   }
 };
 </script>

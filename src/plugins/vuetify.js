@@ -1,14 +1,17 @@
-import Vue from 'vue';
-import Vuetify from 'vuetify/lib/framework';
-import CustomTheme from '@/plugins/vuetify/theme.js';
+import 'vuetify/styles';
+import { createVuetify } from 'vuetify';
+import CustomColors from '@/plugins/vuetify/theme.js';
 
-Vue.use(Vuetify);
-
-export default new Vuetify({
+export default createVuetify({
   theme: {
+    defaultTheme: 'dark',
     themes: {
-      dark: CustomTheme
-    },
-    dark: true
+      dark: {
+        dark: true,
+        colors: {
+          ...CustomColors
+        }
+      }
+    }
   }
 });

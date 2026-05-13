@@ -3,15 +3,14 @@
     :headers="headers"
     :items="statLines"
     :class="isSeasonSummary ? 'sticky1' : 'sticky2'"
-    :sort-by.sync="sortBy"
-    :sort-desc.sync="sortDesc"
+    v-model:sort-by="sortBy"
     @update:sort-by="customInitialSortDirection"
     must-sort
-    disable-pagination
+    :items-per-page="-1"
     :multi-sort="false"
     hide-default-footer
     fixed-header
-    dense
+    density="compact"
     no-data-text="Stats weren't captured for this game"
     mobile-breakpoint="0"
   >
@@ -19,87 +18,59 @@
     table. We can get access to the headers of the main table through the
     deconstructed slot prop object, but we'll need to build the row and columns
     (tr and tds) manually. -->
-    <template v-slot:body.append="{ headers }">
-      <tr class="softball_grey font-weight-bold">
-        <td v-for="(header, i) in headers" :key="i">
-          <div v-if="header.text == 'Player'">Team Totals</div>
-
-          <div v-else-if="header.text == 'PA'">
-            {{ accumulatedStats.pa }}
-          </div>
-
-          <div v-else-if="header.text == 'AB'">
-            {{ accumulatedStats.ab }}
-          </div>
-
-          <div v-else-if="header.text == 'H'">
-            {{ accumulatedStats.h }}
-          </div>
-
-          <div v-else-if="header.text == 'R'">
-            {{ accumulatedStats.r }}
-          </div>
-
-          <div v-else-if="header.text == '1B'">
+    <template v-slot:body.append="{ columns }">
+      <tr class="bg-softball_grey font-weight-bold">
+        <td v-for="(column, i) in columns" :key="i">
+          <div v-if="column.title === 'Player'">Team Totals</div>
+          <div v-else-if="column.title === 'PA'">{{ accumulatedStats.pa }}</div>
+          <div v-else-if="column.title === 'AB'">{{ accumulatedStats.ab }}</div>
+          <div v-else-if="column.title === 'H'">{{ accumulatedStats.h }}</div>
+          <div v-else-if="column.title === 'R'">{{ accumulatedStats.r }}</div>
+          <div v-else-if="column.title === '1B'">
             {{ accumulatedStats.b1 }}
           </div>
-
-          <div v-else-if="header.text == '2B'">
+          <div v-else-if="column.title === '2B'">
             {{ accumulatedStats.b2 }}
           </div>
-
-          <div v-else-if="header.text == '3B'">
+          <div v-else-if="column.title === '3B'">
             {{ accumulatedStats.b3 }}
           </div>
-
-          <div v-else-if="header.text == 'HR'">
+          <div v-else-if="column.title === 'HR'">
             {{ accumulatedStats.hr }}
           </div>
-
-          <div v-else-if="header.text == 'RBI'">
+          <div v-else-if="column.title === 'RBI'">
             {{ accumulatedStats.rbi }}
           </div>
-
-          <div v-else-if="header.text == 'BB'">
+          <div v-else-if="column.title === 'BB'">
             {{ accumulatedStats.bb }}
           </div>
-
-          <div v-else-if="header.text == 'SO'">
+          <div v-else-if="column.title === 'SO'">
             {{ accumulatedStats.so }}
           </div>
-
-          <div v-else-if="header.text == 'SAC'">
+          <div v-else-if="column.title === 'SAC'">
             {{ accumulatedStats.sac }}
           </div>
-
-          <div v-else-if="header.text == 'FoulOut'">
+          <div v-else-if="column.title === 'FoulOut'">
             {{ accumulatedStats.fo }}
           </div>
-
-          <div v-else-if="header.text == 'HR4O'">
+          <div v-else-if="column.title === 'HR4O'">
             {{ accumulatedStats.hr4O }}
           </div>
-
-          <div v-else-if="header.text == 'GIDP'">
+          <div v-else-if="column.title === 'GIDP'">
             {{ accumulatedStats.gidp }}
           </div>
-
-          <div v-else-if="header.text == 'BA'">
+          <div v-else-if="column.title === 'BA'">
             {{ accumulatedStats.avg }}
           </div>
-
-          <div v-else-if="header.text == 'OBP'">
+          <div v-else-if="column.title === 'OBP'">
             {{ accumulatedStats.obp }}
           </div>
-
-          <div v-else-if="header.text == 'SLG'">
+          <div v-else-if="column.title === 'SLG'">
             {{ accumulatedStats.slg }}
           </div>
-
-          <div v-else-if="header.text == 'OPS'">
+          <div v-else-if="column.title === 'OPS'">
             {{ accumulatedStats.ops }}
           </div>
-
           <div v-else>--</div>
         </td>
       </tr>
@@ -108,35 +79,21 @@
 </template>
 
 <script>
-import { reactive, toRefs } from '@vue/composition-api';
+import { nextTick, reactive, toRefs } from 'vue';
 import * as Utils from '@/utils/utils';
 import * as Constants from '@/utils/constants';
 
 export default {
   name: 'StatLineTable',
   props: {
-    /**
-     * The collection of statlines that will make up the table.
-     */
     statLines: {
       type: Array,
       required: true
     },
-    /**
-     * The stats to fill the "sum" row at the bottom of the table. That is, if
-     * all the rows were summed in the column, this row should contain that
-     * value.
-     */
     accumulatedStats: {
       type: Object,
       required: true
     },
-    /**
-     * Designates if the table is for the season summary or a game summary. If
-     * true, the table shows the plus stat columns and doesn't show the batting
-     * order header. If false, the table hides the plus stat columns and shows
-     * the batting order column.
-     */
     isSeasonSummary: {
       type: Boolean,
       default: true
@@ -146,75 +103,48 @@ export default {
     const state = reactive({
       headers: [
         {
-          text: 'Player',
-          value: 'playerName',
-          class: 'softball_red',
+          title: 'Player',
+          key: 'playerName',
+          class: 'bg-softball_red',
+          cellProps: { class: 'text-no-wrap' },
           width: '150px',
           sortDescFirst: false
         },
         ...Constants.baseStatsHeaders
       ],
-      sortBy: 'playerName',
-      sortDesc: false
+      sortBy: [{ key: 'playerName', order: 'asc' }]
     });
 
-    // Handle if the Batting Order column should be shown
     if (props.isSeasonSummary) {
-      // add the plus stats columns
       state.headers.push(...Constants.plusStatsHeaders);
     } else {
-      // add the BO header
       state.headers.unshift({
-        text: '',
-        value: 'bo',
-        class: 'softball_red',
+        title: '',
+        key: 'bo',
+        class: 'bg-softball_red',
         width: '65px',
         sortDescFirst: false
       });
-      //... and sort by it
-      state.sortBy = 'bo';
+      state.sortBy = [{ key: 'bo', order: 'asc' }];
     }
 
     /**
-     * By default, columns that are sorted using the built in "click-on-header"
-     * functionality of the v-data-table sort ascending first, and then
-     * descending. Since we want the numbered stats to sort descending first (so
-     * we see who has the highest PAs, BA, etc.) we have to handle the override
-     * of the sortDesc property.
-     *
-     * NOTE: We need to have must-sort turned on for the table otherwise,
-     * sometimes the payload of this event is an array of size one, and
-     * sometimes it's a string. Weird. must-sort keeps the "reset" functionality
-     * turned off. That is, it either is sorting ascending or descending of the
-     * column you clicked. In other words, there are two toggleable options, not
-     * three (the third being none sort).
-     *
-     * TODO: Make this re-usable somehow... The nextTick part is confusing me.
-     *
-     * @param {String} nameOfColumnToSortBy this is the column that was selected
-     * to sort by in the table
+     * By default columns sort ascending first. For columns with sortDescFirst,
+     * flip the first click to descending. Re-fires with the new value so we
+     * avoid an infinite loop by only acting when the order is currently 'asc'.
      */
-    function customInitialSortDirection(nameOfColumnToSortBy) {
-      let headerToSortBy = state.headers.find(
-        h => h.value === nameOfColumnToSortBy
-      );
+    function customInitialSortDirection(newSortBy) {
+      if (!newSortBy || !newSortBy.length) return;
+      const sortItem = newSortBy[0];
+      const header = state.headers.find(h => h.key === sortItem.key);
 
       if (
-        !Utils.isObjectUndefinedEmptyOrNull(headerToSortBy) &&
-        headerToSortBy.sortDescFirst
+        !Utils.isObjectUndefinedEmptyOrNull(header) &&
+        header.sortDescFirst &&
+        sortItem.order === 'asc'
       ) {
-        /*
-         * Since this is called on the update of the sort-by property, this method
-         * will get called at the BEGINNING of that event. That is, before it's
-         * actually changed. So therefore, if we set the bound state.sortDesc
-         * property in here to true, it would immediately get overridden by
-         * whatever would have come back from the action of clicking on the
-         * header. Instead, if we use nextTick(), and set the value of the
-         * property in the callback, it'll be done after the DOM update and
-         * actually override the sortDesc, which is what we wanted.
-         */
-        this.$nextTick(() => {
-          state.sortDesc = true;
+        nextTick(() => {
+          state.sortBy = [{ key: sortItem.key, order: 'desc' }];
         });
       }
     }
@@ -229,11 +159,11 @@ table > thead > tr > th:nth-child(1) {
   position: sticky !important;
   position: -webkit-sticky !important;
   left: 0;
-  z-index: 9998;
+  z-index: 2;
   background: #1e1e1e;
 }
 .sticky1 table > thead > tr > th:nth-child(1) {
-  z-index: 9999 !important;
+  z-index: 3 !important;
 }
 
 .sticky2 table > tbody > tr > td:nth-child(1),
@@ -241,21 +171,21 @@ table > thead > tr > th:nth-child(1) {
   position: sticky !important;
   position: -webkit-sticky !important;
   left: 0;
-  z-index: 9998;
+  z-index: 2;
   background: #1e1e1e;
 }
 .sticky2 table > thead > tr > th:nth-child(1) {
-  z-index: 9999 !important;
+  z-index: 3 !important;
 }
 .sticky2 table > tbody > tr > td:nth-child(2),
 table > thead > tr > th:nth-child(2) {
   position: sticky !important;
   position: -webkit-sticky !important;
   left: 0;
-  z-index: 9998;
+  z-index: 2;
   background: #1e1e1e;
 }
 .sticky2 table > thead > tr > th:nth-child(2) {
-  z-index: 9999 !important;
+  z-index: 3 !important;
 }
 </style>

@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <v-app-bar app color="black" dark style="z-index: 10001">
+    <v-app-bar color="black">
       <div class="d-flex align-center">
         <router-link :to="{ name: 'Home' }">
           <v-img
@@ -9,7 +9,7 @@
             contain
             src="@/assets/sr-logo-com-hand-drawn.png"
             transition="scale-transition"
-            :width="$vuetify.breakpoint.smAndUp ? 250 : 175"
+            :width="display.smAndUp.value ? 250 : 175"
           />
         </router-link>
       </div>
@@ -17,26 +17,21 @@
       <v-divider class="mx-4" vertical></v-divider>
       <v-row class="ml-2">
         <v-menu offset-y>
-          <template v-slot:activator="{ on, attrs }">
-            <v-chip color="softball_red" v-bind="attrs" v-on="on">
-              <v-avatar>
-                <v-icon>mdi-baseball</v-icon>
+          <template v-slot:activator="{ props: menuProps }">
+            <v-chip color="softball_red" variant="flat" v-bind="menuProps">
+              <v-avatar start color="white">
+                <v-icon color="black">mdi-baseball</v-icon>
               </v-avatar>
               Select Team
             </v-chip>
           </template>
-          <v-list dense shaped>
-            <v-list-item-group v-model="selectedTeam" color="softball_red">
-              <v-list-item
-                v-for="(team, index) in teams"
-                :key="index"
-                @click="goToSelectedTeam(team.name)"
-              >
-                <v-list-item-content>
-                  <v-list-item-title v-text="team.name"></v-list-item-title>
-                </v-list-item-content>
-              </v-list-item>
-            </v-list-item-group>
+          <v-list density="compact" rounded>
+            <v-list-item
+              v-for="(team, index) in teams"
+              :key="index"
+              :title="team.name"
+              @click="goToSelectedTeam(team.name)"
+            />
           </v-list>
         </v-menu>
       </v-row>
@@ -44,8 +39,8 @@
 
     <v-main>
       <v-progress-linear
-        :active="isLoading"
-        :indeterminate="isLoading"
+        v-if="isLoading"
+        indeterminate
         absolute
         color="softball_yellow"
       />
@@ -61,8 +56,15 @@
   </v-app>
 </template>
 
+<style>
+.v-data-table thead th {
+  background-color: rgb(var(--v-theme-softball_red)) !important;
+}
+</style>
+
 <script>
-import { computed, reactive, toRefs } from '@vue/composition-api';
+import { computed, reactive, toRefs } from 'vue';
+import { useDisplay } from 'vuetify';
 import ApiService from './services/ApiService';
 import * as LoadingBar from '@/composables/useLoadingBar';
 import router from './router/router';
@@ -70,6 +72,8 @@ import store from './store/store';
 export default {
   name: 'App',
   setup() {
+    const display = useDisplay();
+
     const state = reactive({
       teams: null,
       selectedTeam: null
@@ -93,16 +97,13 @@ export default {
       });
 
     function goToSelectedTeam(teamName) {
-      /*
-       * Router push converts spaces to %20 automatically
-       */
       router.push({
         name: 'TeamLeagueSummary',
         params: { teamName: teamName }
       });
     }
 
-    return { ...toRefs(state), goToSelectedTeam, isLoading };
+    return { ...toRefs(state), goToSelectedTeam, isLoading, display };
   }
 };
 </script>
