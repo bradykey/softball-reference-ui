@@ -150,7 +150,6 @@ export const baseStatsHeaders = [
  * column order AND the GET→POST translation.
  */
 export const statLineEntryColumns = [
-  { key: 'bo', postKey: 'bO', title: 'BO', width: '60px' },
   { key: 'pa', postKey: 'pA', title: 'PA', width: '60px' },
   { key: 'r', postKey: 'r', title: 'R', width: '60px' },
   { key: 'b1', postKey: 'b1', title: '1B', width: '60px' },

@@ -68,17 +68,21 @@
       </v-card>
 
       <v-card
-        v-if="rows.length"
+        v-if="lineup.length || bench.length"
         class="pa-4 mb-4"
         color="transparent"
         elevation="0"
       >
         <v-card-title class="px-0">Lineup &amp; statlines</v-card-title>
         <p class="text-medium-emphasis mb-3">
-          Check the players who played. Empty stat cells will be submitted as
-          0. The server calculates AB, H, AVG, OBP, SLG, OPS automatically.
+          Check a bench player to add them to the lineup. Drag the lineup rows
+          to set batting order. Empty stat cells submit as 0; the server
+          computes AB, H, AVG, OBP, SLG, OPS.
         </p>
-        <StatLineEntryTable :rows="rows" />
+        <StatLineEntryTable
+          v-model:lineup="lineup"
+          v-model:bench="bench"
+        />
       </v-card>
 
       <v-alert
@@ -106,7 +110,7 @@
         variant="flat"
         size="large"
         :loading="submitting"
-        :disabled="!rows.length"
+        :disabled="!lineup.length && !bench.length"
       >
         Save game
       </v-btn>
@@ -141,20 +145,20 @@ export default {
         score: 0,
         opponentScore: 0
       },
-      rows: [],
+      lineup: [],
+      bench: [],
       errors: [],
       submitting: false,
       loadingRoster: true
     });
 
-    function blankRow(player, index) {
+    function blankRow(player) {
       const row = {
         teamLeaguePlayerId: player.teamLeaguePlayerId,
-        name: player.name,
-        played: false
+        name: player.name
       };
       statLineEntryColumns.forEach(col => {
-        row[col.key] = col.key === 'bo' ? index + 1 : 0;
+        row[col.key] = 0;
       });
       return row;
     }
@@ -165,7 +169,7 @@ export default {
         const sorted = [...response.data].sort((a, b) =>
           a.name.localeCompare(b.name)
         );
-        state.rows = sorted.map(blankRow);
+        state.bench = sorted.map(blankRow);
       })
       .catch(error => {
         console.log(error);
@@ -209,12 +213,13 @@ export default {
         return;
       }
 
-      const playedRows = state.rows.filter(r => r.played);
       const rowErrors = [];
-      for (const row of playedRows) {
+      for (let i = 0; i < state.lineup.length; i++) {
+        const row = state.lineup[i];
         const payload = {
           gameId,
-          teamLeaguePlayerId: row.teamLeaguePlayerId
+          teamLeaguePlayerId: row.teamLeaguePlayerId,
+          bO: i + 1
         };
         statLineEntryColumns.forEach(col => {
           payload[col.postKey] = Number(row[col.key]) || 0;
