@@ -139,6 +139,34 @@ export const baseStatsHeaders = [
 ];
 
 /**
+ * Editable columns for the lineup entry table (admin view).
+ *
+ * `key`     — local form-row field on the entry rows
+ * `postKey` — wire-format name expected by POST /statlines (Jackson camelCase)
+ * `title`   — column header
+ *
+ * The POST DTO uses different field casing than the GET response (e.g. `pA`
+ * on POST vs `pa` on GET). This array is the single source of truth for the
+ * column order AND the GET→POST translation.
+ */
+export const statLineEntryColumns = [
+  { key: 'pa', postKey: 'pA', title: 'PA', width: '60px' },
+  { key: 'r', postKey: 'r', title: 'R', width: '60px' },
+  { key: 'b1', postKey: 'b1', title: '1B', width: '60px' },
+  { key: 'b2', postKey: 'b2', title: '2B', width: '60px' },
+  { key: 'b3', postKey: 'b3', title: '3B', width: '60px' },
+  { key: 'hr', postKey: 'hR', title: 'HR', width: '60px' },
+  { key: 'rbi', postKey: 'rBI', title: 'RBI', width: '70px' },
+  { key: 'bb', postKey: 'bB', title: 'BB', width: '60px' },
+  { key: 'so', postKey: 'sO', title: 'SO', width: '60px' },
+  { key: 'sac', postKey: 'sAC', title: 'SAC', width: '70px' },
+  { key: 'hr4o', postKey: 'hR4O', title: 'HR4O', width: '80px' },
+  { key: 'fo', postKey: 'fO', title: 'FoulOut', width: '90px' },
+  { key: 'gidp', postKey: 'gIDP', title: 'GIDP', width: '80px' },
+  { key: 'lob', postKey: 'lOB', title: 'LOB', width: '60px' }
+];
+
+/**
  * Header objects for the shared set of plus stats: OBP+, SLG+, OPS+
  */
 export const plusStatsHeaders = [

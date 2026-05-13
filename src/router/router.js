@@ -22,6 +22,12 @@ const routes = [
     name: 'GameSummary',
     props: true,
     component: () => import('../views/GameSummary.vue')
+  },
+  {
+    path: '/admin/teamleagues/:teamLeagueId/games/new',
+    name: 'AddGame',
+    props: true,
+    component: () => import('../views/AddGame.vue')
   }
 ];
 
