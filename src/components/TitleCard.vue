@@ -1,34 +1,27 @@
 <template>
   <v-card :flat="flat" elevation="0" color="transparent">
-    <v-card-title class="text-h5 text-sm-h3 font-weight-bold">
+    <v-card-title class="d-flex align-center text-h5 text-sm-h3 font-weight-bold">
       {{ title }}
       <v-divider class="mx-4" vertical></v-divider>
       <v-chip
         v-if="titleChipText"
         :color="titleChipColor"
-        :medium="$vuetify.breakpoint.smAndUp"
-        :small="$vuetify.breakpoint.smOnly || $vuetify.breakpoint.xsOnly"
-        :outlined="outlinedChip"
+        :size="display.smAndUp.value ? 'default' : 'small'"
+        :variant="outlinedChip ? 'outlined' : 'flat'"
         :ripple="false"
-        dark
       >
         {{ titleChipText }}
       </v-chip>
     </v-card-title>
-    <v-card-subtitle
-      class="text-subtitle-2 text-sm-subtitle-1"
-      :style="divider ? titleCardDividerStyle : ''"
-    >
+    <v-card-subtitle class="text-subtitle-2 text-sm-subtitle-1">
       {{ subtitle }}
     </v-card-subtitle>
-    <!-- <v-card-text class="text-body-1">
-      {{ text }}
-    </v-card-text> -->
+    <v-divider v-if="divider" class="mt-3" :color="dividerColor" />
   </v-card>
 </template>
 
 <script>
-import { ref } from '@vue/composition-api';
+import { useDisplay } from 'vuetify';
 import CustomColors from '@/plugins/vuetify/theme';
 export default {
   name: 'TitleCard',
@@ -43,7 +36,7 @@ export default {
     },
     subtitle: {
       type: String,
-      required: ''
+      default: ''
     },
     text: {
       type: String,
@@ -51,7 +44,7 @@ export default {
     },
     titleChipText: {
       type: String,
-      required: ''
+      default: ''
     },
     titleChipColor: {
       type: String,
@@ -71,12 +64,12 @@ export default {
     }
   },
   setup() {
-    const titleCardDividerStyle = ref(
-      'box-shadow: 0px 3px 0px ' + CustomColors.softball_grey
-    );
+    const display = useDisplay();
+    const dividerColor = CustomColors.softball_grey;
 
     return {
-      titleCardDividerStyle
+      display,
+      dividerColor
     };
   }
 };

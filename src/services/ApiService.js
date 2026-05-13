@@ -6,7 +6,7 @@ import axios from 'axios';
  * calls from the same axios instance.
  */
 const apiClient = axios.create({
-  baseURL: process.env.VUE_APP_AXIOS_BASE_URL,
+  baseURL: import.meta.env.VITE_AXIOS_BASE_URL,
   withCredentials: false,
   headers: {
     Accept: 'application/json',
