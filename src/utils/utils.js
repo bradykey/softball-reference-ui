@@ -78,3 +78,14 @@ export function customInitialSortDirection(nameOfColumnToSortBy, headers) {
 export function didWin(score, opponentScore) {
   return score > opponentScore;
 }
+
+/**
+ * Convert an <input type="datetime-local"> value (e.g. "2026-05-12T14:30") to
+ * the backend's expected "yyyy-MM-dd HH:mm:ss" shape.
+ */
+export function toBackendDateString(localDatetime) {
+  if (!localDatetime) return null;
+  const [date, time] = localDatetime.split('T');
+  const fullTime = time && time.length === 5 ? time + ':00' : time;
+  return date + ' ' + fullTime;
+}

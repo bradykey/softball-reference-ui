@@ -70,5 +70,30 @@ export default {
    */
   getGameById(gameId) {
     return apiClient.get('/games/' + gameId);
+  },
+  /**
+   * Retrieve the roster (TeamLeaguePlayers) for a given TeamLeague.
+   * @param {int} teamLeagueId
+   * @returns Array of {teamLeaguePlayerId, name, teamLeagueId}
+   */
+  getRoster(teamLeagueId) {
+    return apiClient.get('/teamleagues/' + teamLeagueId + '/players');
+  },
+  /**
+   * Create a new Game for a TeamLeague. Returns the created Game including
+   * its server-generated gameId, which is needed for subsequent StatLine
+   * POSTs.
+   * @param {Object} payload See backend GameRequest DTO.
+   */
+  createGame(payload) {
+    return apiClient.post('/games', payload);
+  },
+  /**
+   * Create a single StatLine for a Game. The POST DTO uses Jackson-derived
+   * camelCase keys (pA, hR, rBI, ...) — different from the GET response shape.
+   * @param {Object} payload See backend StatLineRequest DTO.
+   */
+  createStatLine(payload) {
+    return apiClient.post('/statlines', payload);
   }
 };

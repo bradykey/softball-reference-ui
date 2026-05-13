@@ -1,0 +1,250 @@
+<template>
+  <v-container>
+    <v-row>
+      <v-col>
+        <h1 class="text-h4 font-weight-bold">Add Game</h1>
+        <p class="text-medium-emphasis">
+          TeamLeague&nbsp;#{{ teamLeagueId }}
+        </p>
+      </v-col>
+    </v-row>
+
+    <v-form ref="formRef" @submit.prevent="onSubmit">
+      <v-card class="pa-4 mb-4" color="transparent" elevation="0">
+        <v-card-title class="px-0">Game details</v-card-title>
+        <v-row>
+          <v-col cols="12" md="4">
+            <v-text-field
+              v-model="game.date"
+              type="datetime-local"
+              label="Date / time"
+              variant="outlined"
+              :rules="[v => !!v || 'Date is required']"
+              required
+            />
+          </v-col>
+          <v-col cols="12" md="4">
+            <v-text-field
+              v-model="game.opponent"
+              label="Opponent"
+              variant="outlined"
+            />
+          </v-col>
+          <v-col cols="12" md="4">
+            <v-text-field
+              v-model="game.field"
+              label="Field"
+              variant="outlined"
+            />
+          </v-col>
+          <v-col cols="6" md="3">
+            <v-switch
+              v-model="game.wasHome"
+              label="Home game?"
+              color="softball_red"
+              hide-details
+              inset
+            />
+          </v-col>
+          <v-col cols="6" md="3">
+            <v-text-field
+              v-model.number="game.score"
+              type="number"
+              min="0"
+              label="Our score"
+              variant="outlined"
+            />
+          </v-col>
+          <v-col cols="6" md="3">
+            <v-text-field
+              v-model.number="game.opponentScore"
+              type="number"
+              min="0"
+              label="Opponent score"
+              variant="outlined"
+            />
+          </v-col>
+        </v-row>
+      </v-card>
+
+      <v-card
+        v-if="rows.length"
+        class="pa-4 mb-4"
+        color="transparent"
+        elevation="0"
+      >
+        <v-card-title class="px-0">Lineup &amp; statlines</v-card-title>
+        <p class="text-medium-emphasis mb-3">
+          Check the players who played. Empty stat cells will be submitted as
+          0. The server calculates AB, H, AVG, OBP, SLG, OPS automatically.
+        </p>
+        <StatLineEntryTable :rows="rows" />
+      </v-card>
+
+      <v-alert
+        v-else-if="!loadingRoster"
+        type="warning"
+        variant="tonal"
+        class="mb-4"
+      >
+        No players found on this team-league's roster. Add players before
+        recording statlines.
+      </v-alert>
+
+      <v-alert
+        v-if="errors.length"
+        type="error"
+        variant="tonal"
+        class="mb-4"
+      >
+        <div v-for="(err, i) in errors" :key="i">{{ err }}</div>
+      </v-alert>
+
+      <v-btn
+        type="submit"
+        color="softball_red"
+        variant="flat"
+        size="large"
+        :loading="submitting"
+        :disabled="!rows.length"
+      >
+        Save game
+      </v-btn>
+    </v-form>
+  </v-container>
+</template>
+
+<script>
+import { reactive, ref, toRefs } from 'vue';
+import { useRouter } from 'vue-router';
+import ApiService from '@/services/ApiService';
+import StatLineEntryTable from '@/components/StatLineEntryTable.vue';
+import { statLineEntryColumns } from '@/utils/constants';
+import { toBackendDateString } from '@/utils/utils';
+import * as LoadingBar from '@/composables/useLoadingBar';
+
+export default {
+  name: 'AddGame',
+  components: { StatLineEntryTable },
+  props: {
+    teamLeagueId: { type: [String, Number], required: true }
+  },
+  setup(props) {
+    const router = useRouter();
+    const formRef = ref(null);
+    const state = reactive({
+      game: {
+        date: '',
+        opponent: '',
+        field: '',
+        wasHome: true,
+        score: 0,
+        opponentScore: 0
+      },
+      rows: [],
+      errors: [],
+      submitting: false,
+      loadingRoster: true
+    });
+
+    function blankRow(player, index) {
+      const row = {
+        teamLeaguePlayerId: player.teamLeaguePlayerId,
+        name: player.name,
+        played: false
+      };
+      statLineEntryColumns.forEach(col => {
+        row[col.key] = col.key === 'bo' ? index + 1 : 0;
+      });
+      return row;
+    }
+
+    LoadingBar.turnOnLoadingBar();
+    ApiService.getRoster(props.teamLeagueId)
+      .then(response => {
+        const sorted = [...response.data].sort((a, b) =>
+          a.name.localeCompare(b.name)
+        );
+        state.rows = sorted.map(blankRow);
+      })
+      .catch(error => {
+        console.log(error);
+        state.errors = [
+          'Failed to load roster: ' + (error.message || String(error))
+        ];
+      })
+      .finally(() => {
+        state.loadingRoster = false;
+        LoadingBar.turnOffLoadingBar();
+      });
+
+    async function onSubmit() {
+      state.errors = [];
+      const { valid } = await formRef.value.validate();
+      if (!valid) return;
+
+      state.submitting = true;
+      LoadingBar.turnOnLoadingBar();
+
+      const gamePayload = {
+        date: toBackendDateString(state.game.date),
+        opponent: state.game.opponent || null,
+        score: state.game.score,
+        opponentScore: state.game.opponentScore,
+        field: state.game.field || null,
+        wasHome: state.game.wasHome,
+        teamLeagueId: Number(props.teamLeagueId)
+      };
+
+      let gameId;
+      try {
+        const res = await ApiService.createGame(gamePayload);
+        gameId = res.data.gameId;
+      } catch (error) {
+        state.errors = [
+          'Failed to create game: ' + (error.message || String(error))
+        ];
+        state.submitting = false;
+        LoadingBar.turnOffLoadingBar();
+        return;
+      }
+
+      const playedRows = state.rows.filter(r => r.played);
+      const rowErrors = [];
+      for (const row of playedRows) {
+        const payload = {
+          gameId,
+          teamLeaguePlayerId: row.teamLeaguePlayerId
+        };
+        statLineEntryColumns.forEach(col => {
+          payload[col.postKey] = Number(row[col.key]) || 0;
+        });
+        try {
+          await ApiService.createStatLine(payload);
+        } catch (error) {
+          rowErrors.push(
+            `Statline for ${row.name} failed: ${
+              error.message || String(error)
+            }`
+          );
+        }
+      }
+
+      state.submitting = false;
+      LoadingBar.turnOffLoadingBar();
+
+      if (rowErrors.length) {
+        state.errors = [
+          `Game #${gameId} was created, but some statlines failed:`,
+          ...rowErrors
+        ];
+        return;
+      }
+
+      router.push({ name: 'GameSummary', params: { gameId } });
+    }
+
+    return { ...toRefs(state), formRef, onSubmit };
+  }
+};
+</script>
