@@ -1,6 +1,8 @@
 <template>
   <v-card :flat="flat" elevation="0" color="transparent">
-    <v-card-title class="d-flex align-center text-h5 text-sm-h3 font-weight-bold">
+    <v-card-title
+      class="d-flex align-center text-h5 text-sm-h3 font-weight-bold"
+    >
       {{ title }}
       <v-divider class="mx-4" vertical></v-divider>
       <v-chip

@@ -421,6 +421,7 @@ A short list of things that bit us during the migration and what they looked lik
 - **Dropdown variant.** Vuetify 3's default `v-chip` variant is `tonal`, not solid. Filled chips from v2 need an explicit `variant="flat"`.
 - **Theme color classes don't auto-apply to `<th>`.** The header config's `class` field in v-data-table is ignored for the actual `<th>` element. Use a CSS rule or `headerProps: { class: '...' }` per column.
 - **The box-shadow trick for a "card divider" stopped working.** In v2 we faked a horizontal divider with `box-shadow: 0px 3px 0px <color>` on `v-card-subtitle`. In v3 it stopped showing — replaced with an actual `<v-divider>` element below the subtitle.
+- **Stale `.eslintrc.js` survived the migration.** The config still extended `@vue/prettier` (gone with the Vue CLI presets) and `plugin:vue/essential` (Vue 2 ruleset), and set `parserOptions.parser: 'babel-eslint'` (package no longer in `devDependencies`). `npm run lint` errored with "couldn't find the config '@vue/prettier'". Fix: extend `plugin:vue/vue3-essential` + `plugin:prettier/recommended` (which uses `eslint-config-prettier` + `eslint-plugin-prettier`, both already installed), drop the `babel-eslint` parser line, and set `parserOptions: { ecmaVersion: 'latest', sourceType: 'module' }` so ESLint accepts modern JS (it defaults to ES5). Two rule overrides were also needed once the Vue 3 ruleset started firing: `vue/valid-v-slot` with `{ allowModifiers: true }` for Vuetify 3's dotted slot names (`body.append`, `item.<column>`), and `vue/multi-word-component-names` with `{ ignores: ['Home'] }` for the single-word view name.
 
 ## 8. Files touched
 
@@ -445,6 +446,7 @@ A short list of things that bit us during the migration and what they looked lik
 | `src/components/TitleCard.vue`             | Flex title, chip variant/size, real `<v-divider>`  |
 | `src/components/SectionHeader.vue`         | Chip variant                                       |
 | `src/utils/constants.js`                   | Header schema (`text`→`title`, `value`→`key`)      |
+| `.eslintrc.js`                             | Vue-CLI-era extends + `babel-eslint` swapped for Vue 3 / Prettier equivalents; added `v-slot` + component-name rule overrides |
 
 ## 9. Suggested follow-ups
 
