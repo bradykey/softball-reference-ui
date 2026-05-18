@@ -51,6 +51,19 @@ Env vars use the `VITE_` prefix and are read via `import.meta.env` (not `process
 - `v-data-table` header schema is `{ title, key }` (not `{ text, value }`). The top-level `class` on a header object is **not** applied to `<th>` — header background color is set by an unscoped CSS rule in `App.vue` against `rgb(var(--v-theme-softball_red))`. The sort model is an array of `{ key, order }` objects (see `src/components/GameSummaryTable.vue:106`).
 - ESLint + Prettier enforce style; configs are `.eslintrc.js` and `.prettierrc.js` (single quotes, 2-space indent, no trailing commas).
 
+## CI / Deploy
+
+GitHub Actions workflows live in `.github/workflows/`:
+
+- `ci.yml` — runs `npm ci`, `npm run lint`, `npm run build` on every PR targeting `main`. Pure gate; no deploy.
+- `deploy.yml` — runs on push to `main` and manual `workflow_dispatch`. First job re-runs lint+build; second job enters the `production` GitHub environment (required-reviewer approval gate) and `git push`es to the Heroku remote at `git.heroku.com/softball-reference.git`. Note that the push target on Heroku is still `master` — Heroku's deploy branch is independent of GitHub's branch name.
+
+Requires:
+- Repo secret `HEROKU_API_KEY` — generate with `heroku authorizations:create --description "GitHub Actions deploy" --scope write` and use the printed `Token` value. Do **not** use `heroku auth:token`; that returns the CLI session token, which rotates on every `heroku login` and will silently break deploys. Authorizations are independent of your local session and can be listed/revoked with `heroku authorizations` / `heroku authorizations:revoke <id>`. Ideally scope the secret to the `production` environment so PR-triggered workflows can't read it.
+- `production` environment configured under repo Settings → Environments with required reviewers.
+
+`npm run heroku-deploy` (`git push heroku main:master`) is still the manual escape hatch — run it from an up-to-date local `main` to deploy out-of-band.
+
 ## Migration reference
 
 See `vue2-to-vue3-migration.md` for the full Vue 2 → 3 / Vuetify 2 → 3 / Vue CLI → Vite delta, including gotchas (asset URLs in `v-img`, z-index changes for overlays, default `v-chip` variant, table header classes) and two latent bugs noted but not fixed (`tL.league = props.teamLeague` should be a comparison; `onBeforeRouteLeave` mutating `from.query` has no effect on the URL).
