@@ -3,9 +3,7 @@
     <v-row>
       <v-col>
         <h1 class="text-h4 font-weight-bold">Add Game</h1>
-        <p class="text-medium-emphasis">
-          TeamLeague&nbsp;#{{ teamLeagueId }}
-        </p>
+        <p class="text-medium-emphasis">TeamLeague&nbsp;#{{ teamLeagueId }}</p>
       </v-col>
     </v-row>
 
@@ -79,10 +77,7 @@
           to set batting order. Empty stat cells submit as 0; the server
           computes AB, H, AVG, OBP, SLG, OPS.
         </p>
-        <StatLineEntryTable
-          v-model:lineup="lineup"
-          v-model:bench="bench"
-        />
+        <StatLineEntryTable v-model:lineup="lineup" v-model:bench="bench" />
       </v-card>
 
       <v-alert
@@ -95,12 +90,7 @@
         recording statlines.
       </v-alert>
 
-      <v-alert
-        v-if="errors.length"
-        type="error"
-        variant="tonal"
-        class="mb-4"
-      >
+      <v-alert v-if="errors.length" type="error" variant="tonal" class="mb-4">
         <div v-for="(err, i) in errors" :key="i">{{ err }}</div>
       </v-alert>
 
@@ -228,9 +218,7 @@ export default {
           await ApiService.createStatLine(payload);
         } catch (error) {
           rowErrors.push(
-            `Statline for ${row.name} failed: ${
-              error.message || String(error)
-            }`
+            `Statline for ${row.name} failed: ${error.message || String(error)}`
           );
         }
       }

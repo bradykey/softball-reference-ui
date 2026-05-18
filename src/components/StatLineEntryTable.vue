@@ -56,11 +56,7 @@
           Bench (uncheck the box to add a player to the lineup)
         </td>
       </tr>
-      <tr
-        v-for="row in bench"
-        :key="row.teamLeaguePlayerId"
-        class="bench-row"
-      >
+      <tr v-for="row in bench" :key="row.teamLeaguePlayerId" class="bench-row">
         <td class="drag-col"></td>
         <td class="bo-col text-center text-medium-emphasis">—</td>
         <td class="player-col text-no-wrap">{{ row.name }}</td>
@@ -109,7 +105,9 @@ export default {
     function benchPlayer(row) {
       emit(
         'update:lineup',
-        props.lineup.filter(r => r.teamLeaguePlayerId !== row.teamLeaguePlayerId)
+        props.lineup.filter(
+          r => r.teamLeaguePlayerId !== row.teamLeaguePlayerId
+        )
       );
       const nextBench = [...props.bench, row].sort((a, b) =>
         a.name.localeCompare(b.name)
