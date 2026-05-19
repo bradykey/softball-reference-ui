@@ -26,24 +26,19 @@ jobs:
     needs: verify
     runs-on: ubuntu-latest
     environment: production
+    env:
+      HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      # Heroku's git endpoint authenticates via HTTP Basic where the username must be a real
-      # Heroku account email (not a literal like "heroku" or "apikey"). ~/.netrc handles
-      # special-character escaping in the email automatically, which an inline URL would not.
-      - name: Configure Heroku credentials
-        env:
-          HEROKU_EMAIL: ${{ vars.HEROKU_EMAIL }}
-          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-        run: |
-          cat > ~/.netrc <<EOF
-          machine git.heroku.com
-            login ${HEROKU_EMAIL}
-            password ${HEROKU_API_KEY}
-          EOF
-          chmod 600 ~/.netrc
+      # The Heroku CLI ships with a git credential helper that authenticates to
+      # git.heroku.com using $HEROKU_API_KEY directly — required for HRKU-prefixed
+      # tokens, which Heroku's legacy email+token Basic-auth flow does not accept.
+      - name: Install Heroku CLI
+        run: curl https://cli-assets.heroku.com/install.sh | sh
       # Heroku's deploy branch is `master` regardless of what GitHub's default branch is named.
       - name: Push to Heroku
-        run: git push https://git.heroku.com/softball-reference.git HEAD:master
+        run: |
+          heroku git:remote -a softball-reference
+          git push heroku HEAD:master

@@ -56,11 +56,10 @@ Env vars use the `VITE_` prefix and are read via `import.meta.env` (not `process
 GitHub Actions workflows live in `.github/workflows/`:
 
 - `ci.yml` — runs `npm ci`, `npm run lint`, `npm run build` on every PR targeting `main`. Pure gate; no deploy.
-- `deploy.yml` — runs on push to `main` and manual `workflow_dispatch`. First job re-runs lint+build; second job enters the `production` GitHub environment (required-reviewer approval gate) and `git push`es to the Heroku remote at `git.heroku.com/softball-reference.git`. Note that the push target on Heroku is still `master` — Heroku's deploy branch is independent of GitHub's branch name.
+- `deploy.yml` — runs on push to `main` and manual `workflow_dispatch`. First job re-runs lint+build; second job enters the `production` GitHub environment (required-reviewer approval gate), installs the Heroku CLI, and `git push`es to `heroku HEAD:master`. The Heroku CLI registers a git credential helper that authenticates via `$HEROKU_API_KEY`, which is the only auth scheme that works with `HRKU-`-prefixed tokens (Heroku's new Identity Service format) — direct URL-credential or `.netrc` Basic-auth flows reject those tokens with "Couldn't find that user." The push target on Heroku is still `master` because Heroku's deploy branch is independent of GitHub's branch name.
 
 Requires:
 - Repo secret `HEROKU_API_KEY` — generate with `heroku authorizations:create --description "GitHub Actions deploy" --scope write` and use the printed `Token` value. Do **not** use `heroku auth:token`; that returns the CLI session token, which rotates on every `heroku login` and will silently break deploys. Authorizations are independent of your local session and can be listed/revoked with `heroku authorizations` / `heroku authorizations:revoke <id>`. Ideally scope the secret to the `production` environment so PR-triggered workflows can't read it.
-- Repo variable `HEROKU_EMAIL` (under Settings → Secrets and variables → Actions → **Variables** tab, not Secrets) — the email of the Heroku account that owns the app. Heroku's git endpoint authenticates via HTTP Basic where the username **must be a real account email**; literal usernames like `heroku` or `apikey` are rejected with "Couldn't find that user."
 - `production` environment configured under repo Settings → Environments with required reviewers.
 
 `npm run heroku-deploy` (`git push heroku main:master`) is still the manual escape hatch — run it from an up-to-date local `main` to deploy out-of-band.
