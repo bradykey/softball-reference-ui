@@ -53,16 +53,13 @@ Env vars use the `VITE_` prefix and are read via `import.meta.env` (not `process
 
 ## CI / Deploy
 
-GitHub Actions workflows live in `.github/workflows/`:
+CI lives in `.github/workflows/ci.yml`: `npm ci` → `npm run lint` → `npm run build`, run on every PR targeting `main` *and* on every push to `main`. The PR run is what branch protection gates merges on; the push-to-`main` run is what Heroku's "Wait for GitHub checks to pass" gates the deploy on.
 
-- `ci.yml` — runs `npm ci`, `npm run lint`, `npm run build` on every PR targeting `main`. Pure gate; no deploy.
-- `deploy.yml` — runs on push to `main` and manual `workflow_dispatch`. First job re-runs lint+build; second job enters the `production` GitHub environment (required-reviewer approval gate), installs the Heroku CLI, and `git push`es to `heroku HEAD:master`. The Heroku CLI registers a git credential helper that authenticates via `$HEROKU_API_KEY`, which is the only auth scheme that works with `HRKU-`-prefixed tokens (Heroku's new Identity Service format) — direct URL-credential or `.netrc` Basic-auth flows reject those tokens with "Couldn't find that user." The push target on Heroku is still `master` because Heroku's deploy branch is independent of GitHub's branch name.
+Deploys themselves are handled by **Heroku's native GitHub integration** (Heroku Dashboard → app → Deploy tab → "App connected to GitHub" + "Automatic deploys" enabled on `main` with "Wait for GitHub checks to pass" checked). On push to `main`, Heroku pulls the source tarball from GitHub, waits for the `verify` check, then runs the Node + nginx buildpacks server-side.
 
-Requires:
-- Repo secret `HEROKU_API_KEY` — generate with `heroku authorizations:create --description "GitHub Actions deploy" --scope write` and use the printed `Token` value. Do **not** use `heroku auth:token`; that returns the CLI session token, which rotates on every `heroku login` and will silently break deploys. Authorizations are independent of your local session and can be listed/revoked with `heroku authorizations` / `heroku authorizations:revoke <id>`. Ideally scope the secret to the `production` environment so PR-triggered workflows can't read it.
-- `production` environment configured under repo Settings → Environments with required reviewers.
+Why not a GitHub Actions deploy workflow: Heroku's new `HRKU-`-prefixed tokens (Identity Service format) don't authenticate to `git.heroku.com` at all via username/password — Heroku explicitly returns "Do not authenticate with username and password using git." The only supported auth for `git.heroku.com` is what `heroku login` sets up locally via a browser OAuth flow, which can't be replicated in CI. The remaining CI-friendly option is Heroku's Platform API (`/sources` + `/apps/<app>/builds` via Bearer auth) — works, but it's substantially more YAML for the same outcome Heroku's built-in GitHub integration already provides.
 
-`npm run heroku-deploy` (`git push heroku main:master`) is still the manual escape hatch — run it from an up-to-date local `main` to deploy out-of-band.
+`npm run heroku-deploy` (`git push heroku main:master`) still works locally because `heroku login` sets up the OAuth credentials git needs — useful as an out-of-band manual deploy.
 
 ## Migration reference
 
