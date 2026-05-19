@@ -60,6 +60,7 @@ GitHub Actions workflows live in `.github/workflows/`:
 
 Requires:
 - Repo secret `HEROKU_API_KEY` — generate with `heroku authorizations:create --description "GitHub Actions deploy" --scope write` and use the printed `Token` value. Do **not** use `heroku auth:token`; that returns the CLI session token, which rotates on every `heroku login` and will silently break deploys. Authorizations are independent of your local session and can be listed/revoked with `heroku authorizations` / `heroku authorizations:revoke <id>`. Ideally scope the secret to the `production` environment so PR-triggered workflows can't read it.
+- Repo variable `HEROKU_EMAIL` (under Settings → Secrets and variables → Actions → **Variables** tab, not Secrets) — the email of the Heroku account that owns the app. Heroku's git endpoint authenticates via HTTP Basic where the username **must be a real account email**; literal usernames like `heroku` or `apikey` are rejected with "Couldn't find that user."
 - `production` environment configured under repo Settings → Environments with required reviewers.
 
 `npm run heroku-deploy` (`git push heroku main:master`) is still the manual escape hatch — run it from an up-to-date local `main` to deploy out-of-band.
