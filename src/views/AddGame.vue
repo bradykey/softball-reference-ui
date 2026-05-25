@@ -1,9 +1,12 @@
 <template>
   <v-container>
-    <v-row>
+    <v-row align="center">
       <v-col>
         <h1 class="text-h4 font-weight-bold">Add Game</h1>
         <p class="text-medium-emphasis">TeamLeague&nbsp;#{{ teamLeagueId }}</p>
+      </v-col>
+      <v-col cols="auto">
+        <v-btn variant="outlined" @click="onLogout">Log out</v-btn>
       </v-col>
     </v-row>
 
@@ -111,6 +114,7 @@
 <script>
 import { reactive, ref, toRefs } from 'vue';
 import { useRouter } from 'vue-router';
+import { useStore } from 'vuex';
 import ApiService from '@/services/ApiService';
 import StatLineEntryTable from '@/components/StatLineEntryTable.vue';
 import { statLineEntryColumns } from '@/utils/constants';
@@ -125,7 +129,13 @@ export default {
   },
   setup(props) {
     const router = useRouter();
+    const store = useStore();
     const formRef = ref(null);
+
+    function onLogout() {
+      store.dispatch('logout');
+      router.push({ name: 'Login' });
+    }
     const state = reactive({
       game: {
         date: '',
@@ -237,7 +247,7 @@ export default {
       router.push({ name: 'GameSummary', params: { gameId } });
     }
 
-    return { ...toRefs(state), formRef, onSubmit };
+    return { ...toRefs(state), formRef, onSubmit, onLogout };
   }
 };
 </script>
