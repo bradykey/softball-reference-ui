@@ -30,6 +30,18 @@ const routes = [
     component: () => import('../views/Login.vue')
   },
   {
+    path: '/admin',
+    name: 'AdminHome',
+    meta: { requiresAuth: true },
+    component: () => import('../views/AdminHome.vue')
+  },
+  {
+    path: '/admin/games/new',
+    name: 'AddGamePicker',
+    meta: { requiresAuth: true },
+    component: () => import('../views/AddGamePicker.vue')
+  },
+  {
     path: '/admin/teamleagues/:teamLeagueId/games/new',
     name: 'AddGame',
     props: true,
