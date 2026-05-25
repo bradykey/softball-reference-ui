@@ -1,4 +1,6 @@
 import axios from 'axios';
+import store from '@/store/store';
+import router from '@/router/router';
 
 /**
  * Specifically only want to have a singleton instance of the API Client. This
@@ -13,6 +15,40 @@ const apiClient = axios.create({
     'Content-Type': 'application/json'
   }
 });
+
+/* Attach the JWT (if any) to every outbound request. */
+apiClient.interceptors.request.use(config => {
+  const token = store.state.authToken;
+  if (token) {
+    config.headers.Authorization = 'Bearer ' + token;
+  }
+  return config;
+});
+
+/* If the server says the token is bad/expired, clear it and bounce to login. */
+apiClient.interceptors.response.use(
+  response => response,
+  error => {
+    const status = error.response && error.response.status;
+    if (status === 401 || status === 403) {
+      if (store.state.authToken) {
+        store.dispatch('logout');
+      }
+      const current = router.currentRoute.value;
+      if (
+        current &&
+        current.path.startsWith('/admin') &&
+        current.name !== 'Login'
+      ) {
+        router.replace({
+          name: 'Login',
+          query: { redirect: current.fullPath }
+        });
+      }
+    }
+    return Promise.reject(error);
+  }
+);
 
 export default {
   /**
@@ -95,5 +131,13 @@ export default {
    */
   createStatLine(payload) {
     return apiClient.post('/statlines', payload);
+  },
+  /**
+   * Exchange admin username/password for a JWT.
+   * @param {{username: string, password: string}} credentials
+   * @returns Promise resolving to { token, expiresInMs }
+   */
+  login(credentials) {
+    return apiClient.post('/auth/login', credentials);
   }
 };
