@@ -71,7 +71,7 @@ export default {
         });
         store.dispatch('setAuthToken', res.data.token);
         const redirect = route.query.redirect;
-        router.replace(redirect ? String(redirect) : '/');
+        router.replace(redirect ? String(redirect) : { name: 'AdminHome' });
       } catch (err) {
         const status = err.response && err.response.status;
         state.error =
