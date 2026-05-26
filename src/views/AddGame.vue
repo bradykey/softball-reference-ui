@@ -14,24 +14,36 @@
       <v-card class="pa-4 mb-4" color="transparent" elevation="0">
         <v-card-title class="px-0">Game details</v-card-title>
         <v-row>
-          <v-col cols="12" md="4">
+          <v-col cols="12" md="3">
             <v-text-field
               v-model="game.date"
-              type="datetime-local"
-              label="Date / time"
+              type="date"
+              label="Date"
               variant="outlined"
               :rules="[v => !!v || 'Date is required']"
               required
             />
           </v-col>
-          <v-col cols="12" md="4">
+          <v-col cols="12" md="3">
+            <v-select
+              v-model="game.time"
+              :items="timeOptions"
+              item-title="title"
+              item-value="value"
+              label="Start time"
+              variant="outlined"
+              :rules="[v => !!v || 'Time is required']"
+              required
+            />
+          </v-col>
+          <v-col cols="12" md="3">
             <v-text-field
               v-model="game.opponent"
               label="Opponent"
               variant="outlined"
             />
           </v-col>
-          <v-col cols="12" md="4">
+          <v-col cols="12" md="3">
             <v-text-field
               v-model="game.field"
               label="Field"
@@ -136,9 +148,16 @@ export default {
       store.dispatch('logout');
       router.push({ name: 'Login' });
     }
+    const timeOptions = [
+      { title: '6:30 PM', value: '18:30' },
+      { title: '7:30 PM', value: '19:30' },
+      { title: '8:30 PM', value: '20:30' }
+    ];
+
     const state = reactive({
       game: {
         date: '',
+        time: '',
         opponent: '',
         field: '',
         wasHome: true,
@@ -191,7 +210,7 @@ export default {
       LoadingBar.turnOnLoadingBar();
 
       const gamePayload = {
-        date: toBackendDateString(state.game.date),
+        date: toBackendDateString(`${state.game.date}T${state.game.time}`),
         opponent: state.game.opponent || null,
         score: state.game.score,
         opponentScore: state.game.opponentScore,
@@ -247,7 +266,7 @@ export default {
       router.push({ name: 'GameSummary', params: { gameId } });
     }
 
-    return { ...toRefs(state), formRef, onSubmit, onLogout };
+    return { ...toRefs(state), timeOptions, formRef, onSubmit, onLogout };
   }
 };
 </script>
