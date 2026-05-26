@@ -3,7 +3,7 @@
     <v-row align="center">
       <v-col>
         <h1 class="text-h4 font-weight-bold">Add Game</h1>
-        <p class="text-medium-emphasis">TeamLeague&nbsp;#{{ teamLeagueId }}</p>
+        <p class="text-medium-emphasis">{{ subtitle }}</p>
       </v-col>
       <v-col cols="auto">
         <v-btn variant="outlined" @click="onLogout">Log out</v-btn>
@@ -124,7 +124,7 @@
 </template>
 
 <script>
-import { reactive, ref, toRefs } from 'vue';
+import { computed, reactive, ref, toRefs } from 'vue';
 import { useRouter } from 'vue-router';
 import { useStore } from 'vuex';
 import ApiService from '@/services/ApiService';
@@ -143,6 +143,12 @@ export default {
     const router = useRouter();
     const store = useStore();
     const formRef = ref(null);
+
+    const subtitle = computed(() =>
+      state.teamName && state.leagueName
+        ? `${state.teamName} — ${state.leagueName}`
+        : `TeamLeague #${props.teamLeagueId}`
+    );
 
     function onLogout() {
       store.dispatch('logout');
@@ -164,6 +170,8 @@ export default {
         score: 0,
         opponentScore: 0
       },
+      teamName: null,
+      leagueName: null,
       lineup: [],
       bench: [],
       errors: [],
@@ -181,6 +189,17 @@ export default {
       });
       return row;
     }
+
+    LoadingBar.turnOnLoadingBar();
+    ApiService.getSeasonSummaryStatLines(props.teamLeagueId)
+      .then(response => {
+        state.teamName = response.data.team;
+        state.leagueName = response.data.league;
+      })
+      .catch(error => console.log(error))
+      .finally(() => {
+        LoadingBar.turnOffLoadingBar();
+      });
 
     LoadingBar.turnOnLoadingBar();
     ApiService.getRoster(props.teamLeagueId)
@@ -266,7 +285,14 @@ export default {
       router.push({ name: 'GameSummary', params: { gameId } });
     }
 
-    return { ...toRefs(state), timeOptions, formRef, onSubmit, onLogout };
+    return {
+      ...toRefs(state),
+      timeOptions,
+      subtitle,
+      formRef,
+      onSubmit,
+      onLogout
+    };
   }
 };
 </script>
