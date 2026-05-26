@@ -3,7 +3,7 @@
     <v-row align="center">
       <v-col>
         <h1 class="text-h4 font-weight-bold">Add Game</h1>
-        <p class="text-medium-emphasis">TeamLeague&nbsp;#{{ teamLeagueId }}</p>
+        <p class="text-medium-emphasis">{{ subtitle }}</p>
       </v-col>
       <v-col cols="auto">
         <v-btn variant="outlined" @click="onLogout">Log out</v-btn>
@@ -14,24 +14,36 @@
       <v-card class="pa-4 mb-4" color="transparent" elevation="0">
         <v-card-title class="px-0">Game details</v-card-title>
         <v-row>
-          <v-col cols="12" md="4">
+          <v-col cols="12" md="3">
             <v-text-field
               v-model="game.date"
-              type="datetime-local"
-              label="Date / time"
+              type="date"
+              label="Date"
               variant="outlined"
               :rules="[v => !!v || 'Date is required']"
               required
             />
           </v-col>
-          <v-col cols="12" md="4">
+          <v-col cols="12" md="3">
+            <v-select
+              v-model="game.time"
+              :items="timeOptions"
+              item-title="title"
+              item-value="value"
+              label="Start time"
+              variant="outlined"
+              :rules="[v => !!v || 'Time is required']"
+              required
+            />
+          </v-col>
+          <v-col cols="12" md="3">
             <v-text-field
               v-model="game.opponent"
               label="Opponent"
               variant="outlined"
             />
           </v-col>
-          <v-col cols="12" md="4">
+          <v-col cols="12" md="3">
             <v-text-field
               v-model="game.field"
               label="Field"
@@ -112,7 +124,7 @@
 </template>
 
 <script>
-import { reactive, ref, toRefs } from 'vue';
+import { computed, reactive, ref, toRefs } from 'vue';
 import { useRouter } from 'vue-router';
 import { useStore } from 'vuex';
 import ApiService from '@/services/ApiService';
@@ -132,19 +144,34 @@ export default {
     const store = useStore();
     const formRef = ref(null);
 
+    const subtitle = computed(() =>
+      state.teamName && state.leagueName
+        ? `${state.teamName} — ${state.leagueName}`
+        : `TeamLeague #${props.teamLeagueId}`
+    );
+
     function onLogout() {
       store.dispatch('logout');
       router.push({ name: 'Login' });
     }
+    const timeOptions = [
+      { title: '6:30 PM', value: '18:30' },
+      { title: '7:30 PM', value: '19:30' },
+      { title: '8:30 PM', value: '20:30' }
+    ];
+
     const state = reactive({
       game: {
         date: '',
+        time: '',
         opponent: '',
         field: '',
         wasHome: true,
         score: 0,
         opponentScore: 0
       },
+      teamName: null,
+      leagueName: null,
       lineup: [],
       bench: [],
       errors: [],
@@ -162,6 +189,17 @@ export default {
       });
       return row;
     }
+
+    LoadingBar.turnOnLoadingBar();
+    ApiService.getSeasonSummaryStatLines(props.teamLeagueId)
+      .then(response => {
+        state.teamName = response.data.team;
+        state.leagueName = response.data.league;
+      })
+      .catch(error => console.log(error))
+      .finally(() => {
+        LoadingBar.turnOffLoadingBar();
+      });
 
     LoadingBar.turnOnLoadingBar();
     ApiService.getRoster(props.teamLeagueId)
@@ -191,7 +229,7 @@ export default {
       LoadingBar.turnOnLoadingBar();
 
       const gamePayload = {
-        date: toBackendDateString(state.game.date),
+        date: toBackendDateString(`${state.game.date}T${state.game.time}`),
         opponent: state.game.opponent || null,
         score: state.game.score,
         opponentScore: state.game.opponentScore,
@@ -247,7 +285,14 @@ export default {
       router.push({ name: 'GameSummary', params: { gameId } });
     }
 
-    return { ...toRefs(state), formRef, onSubmit, onLogout };
+    return {
+      ...toRefs(state),
+      timeOptions,
+      subtitle,
+      formRef,
+      onSubmit,
+      onLogout
+    };
   }
 };
 </script>

@@ -1,6 +1,6 @@
 <template>
   <v-container v-if="!Utils.isObjectUndefinedEmptyOrNull(teamLeagues)">
-    <v-row>
+    <v-row align="center">
       <v-col>
         <TitleCard
           :title="team"
@@ -9,6 +9,19 @@
           :titleChipColor="CustomColors.softball_red"
           :divider="true"
         />
+      </v-col>
+      <v-col v-if="isAuthenticated && currTeamLeague" cols="auto">
+        <v-btn
+          color="softball_red"
+          variant="flat"
+          prepend-icon="mdi-plus"
+          :to="{
+            name: 'AddGame',
+            params: { teamLeagueId: currTeamLeague.teamLeagueId }
+          }"
+        >
+          Add Game
+        </v-btn>
       </v-col>
     </v-row>
     <v-row>
@@ -74,6 +87,7 @@ import ApiService from '@/services/ApiService';
 import CustomColors from '@/plugins/vuetify/theme.js';
 import { computed, reactive, toRefs, watch } from 'vue';
 import { onBeforeRouteLeave } from 'vue-router';
+import { useStore } from 'vuex';
 import * as Utils from '@/utils/utils.js';
 import * as LoadingBar from '@/composables/useLoadingBar';
 
@@ -95,6 +109,9 @@ export default {
     GameSummaryTable
   },
   setup(props) {
+    const store = useStore();
+    const isAuthenticated = computed(() => store.getters.isAuthenticated);
+
     const state = reactive({
       teamLeagues: null,
       currTeamLeague: null,
@@ -224,6 +241,7 @@ export default {
       team,
       recordSummarySubtitle,
       record,
+      isAuthenticated,
       CustomColors,
       Utils
     };

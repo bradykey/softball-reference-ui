@@ -15,7 +15,7 @@
       </div>
 
       <v-divider class="mx-4" vertical></v-divider>
-      <v-row class="ml-2">
+      <v-row class="ml-2" align="center" no-gutters>
         <v-menu offset-y>
           <template v-slot:activator="{ props: menuProps }">
             <v-chip color="softball_red" variant="flat" v-bind="menuProps">
@@ -35,6 +35,15 @@
           </v-list>
         </v-menu>
       </v-row>
+      <v-btn
+        icon
+        variant="text"
+        :to="{ name: 'AdminHome' }"
+        aria-label="Admin"
+        class="mr-2"
+      >
+        <v-icon>mdi-cog</v-icon>
+      </v-btn>
     </v-app-bar>
 
     <v-main>
