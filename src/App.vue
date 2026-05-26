@@ -42,7 +42,7 @@
         aria-label="Admin"
         class="mr-2"
       >
-        <v-icon>mdi-shield-account</v-icon>
+        <v-icon>mdi-cog</v-icon>
       </v-btn>
     </v-app-bar>
 
