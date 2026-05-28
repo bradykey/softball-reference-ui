@@ -216,7 +216,7 @@ export default {
               LoadingBar.turnOffLoadingBar();
             });
 
-          ApiService.getGamesByTeamLeague(newCurrTeamLeague.teamLeagueId)
+          ApiService.getGamesByTeamLeagueId(newCurrTeamLeague.teamLeagueId)
             .then(response => {
               state.games = response.data;
             })
