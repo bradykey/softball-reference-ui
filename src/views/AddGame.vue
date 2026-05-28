@@ -191,7 +191,7 @@ export default {
     }
 
     LoadingBar.turnOnLoadingBar();
-    ApiService.getSeasonSummaryStatLines(props.teamLeagueId)
+    ApiService.getTeamLeagueById(props.teamLeagueId)
       .then(response => {
         state.teamName = response.data.team;
         state.leagueName = response.data.league;

@@ -87,7 +87,16 @@ export default {
     return apiClient.get('/teamleagues/' + teamLeagueId);
   },
   /**
-   * Retrive the GameSummaries for a TeamLeague. This is wrapped in a
+   * Retrieve the TeamLeague information associated with the TeamLeagueId.
+   *
+   * @param {int} teamLeagueId the Id of the TeamLeague to retrieve
+   * @returns The TeamLeagueBindResponse for the TeamLeagueId passed in.
+   */
+  getTeamLeagueById(teamLeagueId) {
+    return apiClient.get('/teamleagues/' + teamLeagueId + '/info');
+  },
+  /**
+   * Retrieve the GameSummaries for a TeamLeague. This is wrapped in a
    * GameSummaryResponse from the API and contains information about each game
    * associated with this TeamLeague.
    * @param {int} teamLeagueId the Id of the TeamLeague / Season to retrive the
@@ -95,7 +104,7 @@ export default {
    * @returns The array of GameSummaryResponses associated with the TeamLeagueId
    * passed in.
    */
-  getGamesByTeamLeague(teamLeagueId) {
+  getGamesByTeamLeagueId(teamLeagueId) {
     return apiClient.get('/teamleagues/' + teamLeagueId + '/games');
   },
   /**
